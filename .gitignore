@@ -1,0 +1,74 @@
+# ─── Sensitive (never commit) ───
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials/
+
+# ─── Python (backend) ───
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.eggs/
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+storage/
+
+# ─── Node (frontend & admin) ───
+node_modules/
+.npm
+.yarn/
+.pnp
+.pnp.js
+*.tsbuildinfo
+
+# ─── Next.js (frontend) ───
+.next/
+out/
+build/
+
+# ─── Vite (admin) ───
+dist/
+
+# ─── Logs & debug ───
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── OS & IDE ───
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── PWA / service workers (generated) ───
+frontend/public/sw.js
+frontend/public/workbox-*.js
+frontend/public/worker-*.js
+frontend/public/*.map
+
+# ─── Optional (uncomment if you use) ───
+# *.local
+# .cursor/
+
+.vs/
+*.user
+*.suo
+*.sln.docstates
+node_modules/
+.venv/
+backend/storage/signatures/
