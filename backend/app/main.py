@@ -2,6 +2,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.audit import router as audit_router
 from app.api.clients import router as clients_router
@@ -9,6 +10,7 @@ from app.api.exports import router as exports_router
 from app.api.shifts import router as shifts_router
 from app.api.workers import router as workers_router
 from app.auth.router import router as auth_router
+from app.config import settings
 from app.database import engine, Base
 from app.models import AuditLog, Client, Shift, Worker  # noqa: F401 - register models for metadata
 
@@ -27,6 +29,14 @@ app = FastAPI(
     description="Workflow management for German home-help services (NRW). Workers, clients, shifts, GDPR soft deletes, PostGIS.",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth_router)
