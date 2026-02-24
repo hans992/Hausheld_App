@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 revision: str = "005"
 down_revision: Union[str, None] = "004"
@@ -17,22 +18,27 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table(
-        "audit_logs",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=True),
-        sa.Column("action", sa.Enum("VIEW", "CREATE", "UPDATE", "DELETE", name="auditaction"), nullable=False),
-        sa.Column("target_type", sa.Enum("Client", name="audittargettype"), nullable=False),
-        sa.Column("target_id", sa.Integer(), nullable=False),
-        sa.Column("details", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
-        sa.ForeignKeyConstraint(["user_id"], ["workers.id"], ondelete="SET NULL"),
-        sa.PrimaryKeyConstraint("id"),
-        comment="GDPR audit trail; append-only, read-only via API",
+    op.execute(
+        "DO $$ BEGIN CREATE TYPE auditaction AS ENUM ('VIEW', 'CREATE', 'UPDATE', 'DELETE');"
+        " EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
     )
-    op.create_index(op.f("ix_audit_logs_target_type_target_id"), "audit_logs", ["target_type", "target_id"], unique=False)
-    op.create_index(op.f("ix_audit_logs_user_id"), "audit_logs", ["user_id"], unique=False)
-    op.create_index(op.f("ix_audit_logs_created_at"), "audit_logs", ["created_at"], unique=False)
+    op.execute(
+        "DO $$ BEGIN CREATE TYPE audittargettype AS ENUM ('Client');"
+        " EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
+    )
+    # Use IF NOT EXISTS so migration is idempotent when audit_logs was created in a previous partial run.
+    # asyncpg allows only one command per execute(), so we run each statement separately.
+    op.execute(
+        "CREATE TABLE IF NOT EXISTS audit_logs ("
+        "id SERIAL NOT NULL, user_id INTEGER, action auditaction NOT NULL, "
+        "target_type audittargettype NOT NULL, target_id INTEGER NOT NULL, details TEXT, "
+        "created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, "
+        "PRIMARY KEY (id), FOREIGN KEY(user_id) REFERENCES workers (id) ON DELETE SET NULL)"
+    )
+    op.execute("COMMENT ON TABLE audit_logs IS 'GDPR audit trail; append-only, read-only via API'")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_audit_logs_target_type_target_id ON audit_logs (target_type, target_id);")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_audit_logs_user_id ON audit_logs (user_id);")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_audit_logs_created_at ON audit_logs (created_at);")
 
     # Allow care_level to store ciphertext (Text); existing data becomes "1".."5"
     op.alter_column(

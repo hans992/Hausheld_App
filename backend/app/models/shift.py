@@ -55,7 +55,7 @@ class Shift(Base, SoftDeleteMixin, TimestampMixin):
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     status: Mapped[ShiftStatus] = mapped_column(
-        Enum(ShiftStatus),
+        Enum(ShiftStatus, values_callable=lambda x: [e.value for e in x]),
         nullable=False,
         default=ShiftStatus.SCHEDULED,
     )

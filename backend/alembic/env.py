@@ -1,9 +1,10 @@
-"""Alembic environment: load app config and run migrations (sync for Alembic)."""
+"""Alembic environment: run migrations with asyncpg (no psycopg2 required)."""
+import asyncio
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.pool import NullPool
 
 from app.config import settings
@@ -15,12 +16,13 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-# Sync URL for Alembic (psycopg2)
-db_url = settings.database_url.replace("postgresql+asyncpg", "postgresql+psycopg2", 1)
+# URL: use alembic.ini sqlalchemy.url if set, else DATABASE_URL from .env (prefer .env to avoid committing secrets)
+db_url = config.get_main_option("sqlalchemy.url") or settings.database_url
 
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode (SQL script only)."""
+    # For offline, use a sync-style URL for script generation (no driver change needed for script)
     context.configure(
         url=db_url,
         target_metadata=target_metadata,
@@ -37,14 +39,14 @@ def do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode (connect to DB). Requires psycopg2 or psycopg."""
-    connectable = create_engine(db_url, poolclass=NullPool)
-    with connectable.connect() as connection:
-        do_run_migrations(connection)
+async def run_migrations_online() -> None:
+    """Run migrations in 'online' mode using asyncpg."""
+    connectable = create_async_engine(db_url, poolclass=NullPool)
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
 
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    run_migrations_online()
+    asyncio.run(run_migrations_online())

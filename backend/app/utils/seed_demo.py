@@ -319,7 +319,7 @@ async def seed_demo() -> None:
         db.add_all(shifts)
         await db.commit()
 
-    print("✅ Demo seed complete:")
+    print("Demo seed complete:")
     print("  - Workers: admin@demo.com, worker-essen@demo.com, worker-duesseldorf@demo.com")
     print("  - Clients: 5 demo clients (NRW)")
     print("  - Shifts: 10 (includes 2 Completed with signature keys; some Unassigned for substitutions)")

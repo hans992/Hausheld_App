@@ -10,6 +10,7 @@ from typing import Sequence, Union
 import geoalchemy2
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = "001"
@@ -20,12 +21,22 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.execute("CREATE EXTENSION IF NOT EXISTS postgis;")
+    # Create enums only if they don't exist (idempotent for half-applied or reset DBs)
+    op.execute(
+        "DO $$ BEGIN CREATE TYPE workerrole AS ENUM ('Admin', 'Worker');"
+        " EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
+    )
+    op.execute(
+        "DO $$ BEGIN CREATE TYPE shiftstatus AS ENUM "
+        "('Scheduled', 'In_Progress', 'Completed', 'Cancelled', 'Unassigned');"
+        " EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
+    )
     op.create_table(
         "workers",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("name", sa.String(255), nullable=False),
         sa.Column("email", sa.String(255), nullable=False),
-        sa.Column("role", sa.Enum("Admin", "Worker", name="workerrole"), nullable=False),
+        sa.Column("role", postgresql.ENUM("Admin", "Worker", name="workerrole", create_type=False), nullable=False),
         sa.Column("contract_hours", sa.Integer(), nullable=False),
         sa.Column("current_location", geoalchemy2.types.Geography(geometry_type="POINT", srid=4326), nullable=True),
         sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
@@ -54,7 +65,7 @@ def upgrade() -> None:
         sa.Column("client_id", sa.Integer(), nullable=False),
         sa.Column("start_time", sa.DateTime(timezone=True), nullable=False),
         sa.Column("end_time", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("status", sa.Enum("Scheduled", "In_Progress", "Completed", "Cancelled", "Unassigned", name="shiftstatus"), nullable=False),
+        sa.Column("status", postgresql.ENUM("Scheduled", "In_Progress", "Completed", "Cancelled", "Unassigned", name="shiftstatus", create_type=False), nullable=False),
         sa.Column("tasks", sa.String(255), nullable=False),
         sa.Column("check_in_location", geoalchemy2.types.Geography(geometry_type="POINT", srid=4326), nullable=True),
         sa.Column("check_in_at", sa.DateTime(timezone=True), nullable=True),

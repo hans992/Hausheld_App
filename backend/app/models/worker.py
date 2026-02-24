@@ -29,7 +29,7 @@ class Worker(Base, SoftDeleteMixin, TimestampMixin):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     role: Mapped[WorkerRole] = mapped_column(
-        Enum(WorkerRole),
+        Enum(WorkerRole, values_callable=lambda x: [e.value for e in x]),
         nullable=False,
         default=WorkerRole.WORKER,
     )
