@@ -1,5 +1,4 @@
 """Application configuration."""
-from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -10,15 +9,8 @@ class Settings(BaseSettings):
     env: str = "development"
     debug: bool = True
 
-    # CORS: Railway may send "https://app1.com,https://app2.com"; we normalize to list
-    allowed_origins: list[str] = ["*"]
-
-    @field_validator("allowed_origins", mode="before")
-    @classmethod
-    def parse_allowed_origins(cls, v: str | list[str]) -> list[str]:
-        if isinstance(v, str):
-            return [o.strip() for o in v.split(",") if o.strip()] if v.strip() else ["*"]
-        return list(v) if v else ["*"]
+    # CORS: store as str so env "https://a.com,https://b.com" or "*" never hits JSON parse
+    allowed_origins: str = "*"
 
     # Auth: JWT (dev simulation or Supabase/Auth0)
     jwt_secret: str = "change-me-in-production-dev-only"
