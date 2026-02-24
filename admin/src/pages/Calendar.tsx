@@ -111,11 +111,11 @@ export function Calendar() {
               <AlertCircle className="h-5 w-5" />
               Error
             </CardTitle>
-            <CardContent>
-              <p className="text-muted-foreground">{error}</p>
-              <p className="mt-2 text-sm text-muted-foreground">Ensure you are logged in as Admin and the API is running.</p>
-            </CardContent>
-          </Card>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{error}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Ensure you are logged in as Admin and the API is running.</p>
+          </CardContent>
         </Card>
       </div>
     );

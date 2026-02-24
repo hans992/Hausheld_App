@@ -120,10 +120,10 @@ export function Clients() {
               <AlertCircle className="h-5 w-5" />
               Error
             </CardTitle>
-            <CardContent>
-              <p className="text-muted-foreground">{error}</p>
-            </CardContent>
-          </Card>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{error}</p>
+          </CardContent>
         </Card>
       </div>
     );
