@@ -26,11 +26,13 @@ export default function MobileLayout({
     <div className="flex min-h-screen flex-col pb-20">
       <header className="sticky top-0 z-40 border-b bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Link href="/schedule" className="flex items-center justify-center">
-          <img
-            src="/logo-hausheld-ki.png"
-            alt="Hausheld KI"
-            className="h-9 w-auto max-w-[160px] object-contain"
-          />
+          <span className="rounded-lg bg-white/95 px-3 py-2 shadow-soft ring-1 ring-black/5">
+            <img
+              src="/logo-hausheld-ki.png"
+              alt="Hausheld KI"
+              className="h-9 w-auto max-w-[160px] object-contain"
+            />
+          </span>
         </Link>
       </header>
       <main className="flex-1 p-4">{children}</main>

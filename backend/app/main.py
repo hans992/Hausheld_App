@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.audit import router as audit_router
 from app.api.clients import router as clients_router
 from app.api.exports import router as exports_router
+from app.api.geo import router as geo_router
 from app.api.shifts import router as shifts_router
 from app.api.workers import router as workers_router
 from app.auth.router import router as auth_router
@@ -46,6 +47,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(geo_router, prefix="/api/v1/geo")
 app.include_router(workers_router)
 app.include_router(clients_router)
 app.include_router(shifts_router)

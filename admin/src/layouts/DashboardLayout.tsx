@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Calendar, Users, Building2, CreditCard, LayoutDashboard, FileText, Loader2, LogOut, User, Settings } from "lucide-react";
+import { Calendar, Users, Building2, CreditCard, LayoutDashboard, FileText, Loader2, LogOut, User, Settings, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { clearAuthToken, getAuthToken } from "@/lib/api";
@@ -10,6 +10,7 @@ const nav = [
   { to: "/admin/calendar", end: false, labelKey: "nav.calendar", icon: Calendar },
   { to: "/admin/workers", end: false, labelKey: "nav.workers", icon: Users },
   { to: "/admin/clients", end: false, labelKey: "nav.clients", icon: Building2 },
+  { to: "/admin/map", end: false, labelKey: "nav.map", icon: MapPin },
   { to: "/admin/billing", end: false, labelKey: "nav.billing", icon: CreditCard },
   { to: "/admin/audit", end: false, labelKey: "nav.audit", icon: FileText },
   { to: "/admin/profile", end: false, labelKey: "nav.profile", icon: User },
@@ -50,12 +51,14 @@ export function DashboardLayout() {
       <aside className="flex w-64 flex-col border-r border-border/80 bg-card bg-gradient-to-b from-card to-muted/30">
         <div className="flex h-16 items-center gap-2 border-b px-4">
           <Link to="/admin" className="flex items-center gap-2 font-semibold text-primary">
-            <img
-              src="/logo-hausheld-ki.png"
-              alt=""
-              className="h-9 w-auto object-contain"
-              aria-hidden
-            />
+            <span className="rounded-lg bg-white/95 p-1.5 shadow-soft ring-1 ring-black/5">
+              <img
+                src="/logo-hausheld-ki.png"
+                alt=""
+                className="h-8 w-auto object-contain"
+                aria-hidden
+              />
+            </span>
             <span>Hausheld Admin</span>
           </Link>
         </div>

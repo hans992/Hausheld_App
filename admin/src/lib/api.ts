@@ -180,6 +180,20 @@ export async function getSuggestSubstitutes(shiftId: number): Promise<Substitute
   return fetchApi<SubstituteSuggestion[]>(`/shifts/${shiftId}/suggest-substitutes`);
 }
 
+// Geo (heatmap)
+export interface GeoJSONFeatureCollection {
+  type: "FeatureCollection";
+  features: Array<{
+    type: "Feature";
+    geometry: { type: "Point"; coordinates: [number, number] };
+    properties: { weight: number };
+  }>;
+}
+
+export async function getHeatmap(): Promise<GeoJSONFeatureCollection> {
+  return fetchApi<GeoJSONFeatureCollection>("/api/v1/geo/heatmap");
+}
+
 // Audit log
 export interface AuditLogEntry {
   id: number;

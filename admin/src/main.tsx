@@ -13,6 +13,7 @@ import { Audit } from "@/pages/Audit";
 import { Login } from "@/pages/Login";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
+import { MapPage } from "@/pages/Map";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="clients" element={<Clients />} />
           <Route path="billing" element={<Billing />} />
           <Route path="audit" element={<Audit />} />
+          <Route path="map" element={<MapPage />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
         </Route>
