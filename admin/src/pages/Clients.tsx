@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, AlertCircle, AlertTriangle, X, ListOrdered } from "lucide-react";
+import { AlertCircle, AlertTriangle, X, ListOrdered } from "lucide-react";
 import { getClients, getClientBudgetStatus, type Client, type BudgetStatusResponse } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -201,9 +201,12 @@ export function Clients() {
                       title="No clients yet"
                       description="Clients are added via the backend or demo seed. Run the demo seed to see example data with budget alerts."
                       action={
-                        <Button variant="secondary" size="sm" asChild>
-                          <Link to="/admin/calendar">Open Calendar</Link>
-                        </Button>
+                        <Link
+                          to="/admin/calendar"
+                          className="inline-flex h-9 items-center justify-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          Open Calendar
+                        </Link>
                       }
                       className="rounded-none border-0"
                     />

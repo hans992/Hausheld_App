@@ -186,9 +186,12 @@ export function Workers() {
                       title="No workers yet"
                       description="Workers are added via the backend or demo seed. Use Calendar to assign shifts once you have workers."
                       action={
-                        <Button variant="secondary" size="sm" asChild>
-                          <Link to="/admin/calendar">Open Calendar</Link>
-                        </Button>
+                        <Link
+                          to="/admin/calendar"
+                          className="inline-flex h-9 items-center justify-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          Open Calendar
+                        </Link>
                       }
                       className="rounded-none border-0"
                     />

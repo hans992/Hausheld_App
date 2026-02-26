@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, AlertCircle, FileText } from "lucide-react";
+import { AlertCircle, FileText } from "lucide-react";
 import { getAuditLogs, type AuditLogEntry } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";

@@ -163,12 +163,18 @@ export function Calendar() {
               description="Shifts are created via the backend or demo seed. Add workers and clients first, then create shifts to see them here."
               action={
                 <div className="flex gap-2 justify-center flex-wrap">
-                  <Button variant="secondary" size="sm" asChild>
-                    <Link to="/admin/workers">Workers</Link>
-                  </Button>
-                  <Button variant="secondary" size="sm" asChild>
-                    <Link to="/admin/clients">Clients</Link>
-                  </Button>
+                  <Link
+                    to="/admin/workers"
+                    className="inline-flex h-9 items-center justify-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Workers
+                  </Link>
+                  <Link
+                    to="/admin/clients"
+                    className="inline-flex h-9 items-center justify-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Clients
+                  </Link>
                 </div>
               }
               className="mt-6"
