@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Users, Building2, CreditCard, FileText, AlertTriangle, UserX, Loader2, Database } from "lucide-react";
+import { Calendar, Users, Building2, CreditCard, FileText, AlertTriangle, UserX, Loader2, Database, Euro } from "lucide-react";
 import { toast } from "sonner";
 import {
   BarChart,
@@ -14,13 +14,16 @@ import {
   Pie,
   Cell,
   Legend,
+  AreaChart,
+  Area,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getShifts, getWorkers, getClients, getBudgetAlerts, runSeedDemo } from "@/lib/api";
+import { getShifts, getWorkers, getClients, getBudgetAlerts, getDashboardSummary, runSeedDemo } from "@/lib/api";
 import type { Shift } from "@/lib/api";
 import type { Worker } from "@/lib/api";
 import type { BudgetStatusResponse } from "@/lib/api";
+import type { DashboardSummary } from "@/lib/api";
 import { useTranslation } from "react-i18next";
 
 const links = [
@@ -116,6 +119,7 @@ export function Dashboard() {
     unassignedThisWeek: number;
     budgetAlertsCount: number;
   } | null>(null);
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [shiftsList, setShiftsList] = useState<Shift[]>([]);
   const [workersList, setWorkersList] = useState<Worker[]>([]);
   const [clientsList, setClientsList] = useState<{ id: number; name: string }[]>([]);
@@ -126,12 +130,13 @@ export function Dashboard() {
 
   const loadStats = useCallback(() => {
     const month = currentMonth();
-    return Promise.all([getWorkers(), getClients(), getShifts(), getBudgetAlerts(month)])
-      .then(([workers, clients, shifts, alerts]) => {
+    return Promise.all([getWorkers(), getClients(), getShifts(), getBudgetAlerts(month), getDashboardSummary()])
+      .then(([workers, clients, shifts, alerts, s]) => {
         setWorkersList(workers);
         setClientsList(clients.map((c) => ({ id: c.id, name: c.name })));
         setShiftsList(shifts);
         setBudgetAlertsList(alerts);
+        setSummary(s);
         const unassignedThisWeek = shifts.filter(
           (s) => s.status === "Unassigned" && isThisWeek(s.start_time)
         ).length;
@@ -253,6 +258,151 @@ export function Dashboard() {
             </Card>
           </Link>
         </div>
+        {/* Stats from dashboard-summary API: KPIs + charts */}
+        {summary && (
+          <>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Card className="transition-colors hover:bg-muted/30">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Active Workers</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{summary.total_active_workers}</p>
+                </CardContent>
+              </Card>
+              <Card className="transition-colors hover:bg-muted/30">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Clients</CardTitle>
+                  <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{summary.total_clients}</p>
+                </CardContent>
+              </Card>
+              <Card className="transition-colors hover:bg-muted/30">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Revenue</CardTitle>
+                  <Euro className="h-4 w-4 text-muted-foreground" aria-hidden />
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">€{summary.monthly_revenue.toFixed(2)}</p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Weekly Shift Trends</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={(summary.weekly_shift_trends ?? []).map((d) => ({
+                          ...d,
+                          shortDate: new Date(d.date).toLocaleDateString("de-DE", { weekday: "short", day: "numeric" }),
+                        }))}
+                        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis dataKey="shortDate" tick={{ fontSize: 11 }} />
+                        <YAxis
+                          domain={[0, Math.max(1, ...(summary.weekly_shift_trends ?? []).map((d) => d.count))]}
+                          allowDecimals={false}
+                          tick={{ fontSize: 11 }}
+                        />
+                        <Tooltip
+                          formatter={([v]: [number]) => [v, "Shifts"]}
+                          labelFormatter={(_, payload) => payload?.[0]?.payload?.date ?? ""}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="count"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fill="url(#trendGradient)"
+                          isAnimationActive
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">City Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={summary.city_distribution}
+                          dataKey="value"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={70}
+                          paddingAngle={2}
+                          label={({ name, value }) => (value > 0 ? `${name}: ${value}` : null)}
+                        >
+                          {summary.city_distribution.map((_, index) => (
+                            <Cell
+                              key={`cell-summary-${index}`}
+                              fill={["#64748b", "#4f46e5", "#f43f5e"][index % 3]}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Top 5 Workers (Completed Shifts)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {(summary.top_workers_completed_shifts ?? []).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No completed shifts this month.</p>
+                    ) : (
+                      (summary.top_workers_completed_shifts ?? []).map((w) => {
+                        const topWorkers = summary.top_workers_completed_shifts ?? [];
+                        const maxVal = Math.max(1, ...topWorkers.map((x) => x.value));
+                        const pct = (w.value / maxVal) * 100;
+                        return (
+                          <div key={w.name} className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                              <span className="font-medium truncate">{w.name}</span>
+                              <span className="text-muted-foreground tabular-nums">{w.value}</span>
+                            </div>
+                            <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-indigo-500 transition-all duration-500"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
         {shiftsList.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">{t("dashboard.analytics")}</h2>

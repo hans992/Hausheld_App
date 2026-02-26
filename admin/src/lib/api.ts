@@ -194,6 +194,21 @@ export async function getHeatmap(): Promise<GeoJSONFeatureCollection> {
   return fetchApi<GeoJSONFeatureCollection>("/api/v1/geo/heatmap");
 }
 
+// Dashboard stats (for Map page and dashboard)
+export interface DashboardSummary {
+  weekly_shift_trends: { date: string; count: number }[];
+  city_distribution: { name: string; value: number }[];
+  budget_usage: { total_spent: number; total_allocated: number };
+  total_active_workers: number;
+  total_clients: number;
+  monthly_revenue: number;
+  top_workers_completed_shifts: { name: string; value: number }[];
+}
+
+export async function getDashboardSummary(): Promise<DashboardSummary> {
+  return fetchApi<DashboardSummary>("/api/v1/stats/dashboard-summary");
+}
+
 // Audit log
 export interface AuditLogEntry {
   id: number;
