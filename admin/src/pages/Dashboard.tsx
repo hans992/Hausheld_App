@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Users, Building2, CreditCard, FileText, AlertTriangle, UserX, Loader2, Database, Euro } from "lucide-react";
+import { Users, Building2, AlertTriangle, UserX, Loader2, Database, Euro } from "lucide-react";
 import { toast } from "sonner";
 import {
   BarChart,
@@ -25,14 +25,6 @@ import type { Worker } from "@/lib/api";
 import type { BudgetStatusResponse } from "@/lib/api";
 import type { DashboardSummary } from "@/lib/api";
 import { useTranslation } from "react-i18next";
-
-const links = [
-  { to: "/admin/calendar", label: "Calendar", icon: Calendar, desc: "View and manage shifts" },
-  { to: "/admin/workers", label: "Workers", icon: Users, desc: "Workers and sick leave" },
-  { to: "/admin/clients", label: "Clients", icon: Building2, desc: "Clients and budget alerts" },
-  { to: "/admin/billing", label: "Billing", icon: CreditCard, desc: "SGB XI CSV export" },
-  { to: "/admin/audit", label: "Audit Log", icon: FileText, desc: "Who did what, when" },
-];
 
 function currentMonth(): string {
   const now = new Date();
@@ -560,27 +552,6 @@ export function Dashboard() {
         )}
         </>
       ) : null}
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {links.map(({ to, label, icon: Icon, desc }) => (
-          <Card key={to}>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Icon className="h-5 w-5 text-primary" aria-hidden />
-                {label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{desc}</p>
-              <Link to={to}>
-                <Button variant="secondary" size="sm" className="mt-4">
-                  {t("common.open")}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 }

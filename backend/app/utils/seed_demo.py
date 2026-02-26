@@ -2,10 +2,11 @@
 Seed a demo dataset for local development and UI demos.
 
 Creates:
-1) 13 Workers: 1 Admin (admin@demo.com) + 12 Workers across NRW cities
-2) 25 Clients with varied Krankenkassen, Pflegegrad (1-5), and 4-6 facility-style (Krankenhaus, Pflegeheim, etc.)
+1) 13 Workers: 1 Admin (admin@demo.com) + 12 Workers across NRW cities (all with current_location for map)
+2) 25 Clients with varied Krankenkassen, Pflegegrad (1-5), and 4-6 facility-style; all with address_location for heatmap
 3) 20+ Shifts: mix of Scheduled / In_Progress / Unassigned and Completed with mock signature keys
 4) Budget alerts: completed shifts with costs high enough to trigger remaining_budget < 15% for some clients
+5) Map data: every client has address_location (PostGIS point), every worker has current_location — heatmap and worker pins will show on Map page after seed
 
 Usage:
   python -m app.utils.seed_demo
@@ -679,10 +680,11 @@ async def seed_demo() -> None:
         await db.commit()
 
     print("Demo seed complete:")
-    print("  - Workers: 13 (1 Admin + 12 Workers across NRW; 2 on sick leave)")
-    print("  - Clients: 25 (5 original + 6 facilities/Krankenhäuser + 14 private; varied Krankenkassen)")
+    print("  - Workers: 13 (1 Admin + 12 Workers across NRW; 2 on sick leave; all have current_location for map)")
+    print("  - Clients: 25 (5 original + 6 facilities/Krankenhäuser + 14 private; varied Krankenkassen; all have address_location for heatmap)")
     print(f"  - Shifts: {num_shifts} (mix of Scheduled, In Progress, Unassigned, Completed; 2 Completed with budget alerts)")
     print("  - Budget alerts: triggered for Essen + Düsseldorf demo clients in the current month")
+    print("  - Map data: clients and workers have geo coordinates — run Admin Map page to see heatmap and worker pins")
 
 
 def main() -> None:

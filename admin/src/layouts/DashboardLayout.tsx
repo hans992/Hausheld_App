@@ -53,7 +53,7 @@ export function DashboardLayout() {
           <Link to="/admin" className="flex items-center gap-2 font-semibold text-primary">
             <span className="rounded-lg bg-white/95 p-1.5 shadow-soft ring-1 ring-black/5">
               <img
-                src="/logo-hausheld-ki.png"
+                src="/logo_hausheld.png"
                 alt=""
                 className="h-8 w-auto object-contain"
                 aria-hidden

@@ -28,7 +28,7 @@ export default function MobileLayout({
         <Link href="/schedule" className="flex items-center justify-center">
           <span className="rounded-lg bg-white/95 px-3 py-2 shadow-soft ring-1 ring-black/5">
             <img
-              src="/logo-hausheld-ki.png"
+              src="/logo_hausheld.png"
               alt="Hausheld KI"
               className="h-9 w-auto max-w-[160px] object-contain"
             />

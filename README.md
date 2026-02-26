@@ -10,11 +10,13 @@
 - [Architecture](#architecture)
 - [Tech stack](#tech-stack)
 - [Geospatial & substitution](#geospatial--substitution)
+- [Premium dashboard & map](#premium-dashboard--map)
 - [GDPR & compliance](#gdpr--compliance)
 - [Shift workflow](#shift-workflow)
 - [Quick start](#quick-start)
 - [Demo mode](#demo-mode)
 - [API reference](#api-reference)
+- [Recent updates](#recent-updates)
 
 ---
 
@@ -23,7 +25,8 @@
 | Area | Description |
 |------|-------------|
 | **Mobile PWA** | Workers see their schedule, check in/out with GPS, capture client signatures (Leistungsnachweis). |
-| **Admin dashboard** | Calendar, sick leave, substitute suggestions, client budget alerts, SGB XI CSV export, audit log. |
+| **Admin dashboard** | Calendar, workers, clients, map (heatmap + worker pins), billing, audit log — all via sidebar; dashboard shows KPIs and premium analytics (Recharts). |
+| **Geo map** | Map page: shift-density heatmap and worker locations (Mapbox + Deck.gl); data from demo seed. |
 | **Substitution engine** | Suggests up to 3 replacement workers by distance (PostGIS) and weekly capacity. |
 | **Budget & billing** | Per-client monthly budget, 15% alert threshold, CSV export for insurance (SGB XI). |
 | **Audit trail** | Append-only log of every access to client (health) data; read-only API. |
@@ -49,7 +52,7 @@ flowchart LR
 
 - **Backend** (`/backend`) — Single source of truth. FastAPI, SQLAlchemy 2 (async), PostgreSQL + PostGIS, Alembic. Enforces RBAC, encrypts health data, writes to the audit log.
 - **Mobile** (`/frontend`) — Next.js PWA (German UI). Schedule, check-in/out, signature pad, client list for assigned shifts.
-- **Admin** (`/admin`) — Vite + React. Calendar (FullCalendar), workers & sick leave, clients & budget alerts, billing export, audit log, substitute assignment.
+- **Admin** (`/admin`) — Vite + React. Dashboard (KPIs + Recharts analytics), calendar (FullCalendar), workers & sick leave, clients & budget alerts, **Map** (heatmap + worker pins, Mapbox + Deck.gl), billing export, audit log, substitute assignment. Navigation is via sidebar only (no duplicate cards on dashboard).
 
 Data flow is unidirectional: frontends only call the API; no direct DB access from the client.
 
@@ -59,9 +62,9 @@ Data flow is unidirectional: frontends only call the API; no direct DB access fr
 
 | Path | Stack | Role |
 |------|--------|------|
-| `/backend` | FastAPI, PostgreSQL, PostGIS, SQLAlchemy 2, Alembic, Pydantic | API, auth, substitutions, budget, audit, SGB XI export |
+| `/backend` | FastAPI, PostgreSQL, PostGIS, SQLAlchemy 2, Alembic, Pydantic | API, auth, geo heatmap, dashboard stats, substitutions, budget, audit, SGB XI export |
 | `/frontend` | Next.js, Tailwind, PWA | Mobile worker app |
-| `/admin` | Vite, React, Tailwind, FullCalendar | Desktop admin |
+| `/admin` | Vite, React, Tailwind, FullCalendar, Recharts, Mapbox, Deck.gl | Desktop admin; premium analytics and map |
 
 ---
 
@@ -73,6 +76,29 @@ PostgreSQL/PostGIS powers **distance-based substitute suggestions** when a shift
 - **Endpoint:** `GET /shifts/{id}/suggest-substitutes` (Admin only).
 - **Logic:** Ranks candidates by `ST_Distance` (client ↔ worker), excludes overlapping shifts and workers over their weekly `contract_hours`.
 - **Result:** Up to 3 workers with distance (m) and remaining capacity; admin assigns with one click.
+
+**Geo API (v1)** — Used by the Admin Map page:
+
+- `GET /api/v1/geo/heatmap` — GeoJSON FeatureCollection of client locations with `weight` = shift count per location (for heatmap layer).
+- Workers with `current_location` are shown as pins via existing `GET /workers`. Demo seed gives every client `address_location` and every worker `current_location` so the map shows data after seeding.
+
+---
+
+## Premium dashboard & map
+
+**Dashboard** — The admin dashboard shows:
+
+- **Stat cards:** Workers, clients, unassigned this week, budget alerts (links to relevant pages).
+- **Summary from API:** Total active workers, total clients, monthly revenue (€); weekly shift trends (AreaChart); city distribution (DonutChart: Essen, Düsseldorf, Köln); top 5 workers by completed shifts (bar list).
+- **Analytics (when shifts exist):** Shifts per week (AreaChart), shift status (DonutChart), budget used % (horizontal bar), completed shifts by worker (bar chart). All use Recharts with gradients and consistent tooltips; no duplicate navigation cards (sidebar only).
+
+**Map page** (`/admin/map`) — Mapbox dark base map + Deck.gl:
+
+- **Heatmap:** Shift density by client location (data from `GET /api/v1/geo/heatmap`).
+- **Worker pins:** IconLayer from `GET /workers`; hover shows name and status.
+- **Fit bounds** to data; **legend** for heatmap colours. Requires `VITE_MAPBOX_TOKEN` in admin `.env`.
+
+**Logo** — Both apps use `logo_hausheld.png` from `frontend/public` (copied to `admin/public`). Used on login pages, admin sidebar, and mobile header.
 
 ---
 
@@ -146,11 +172,11 @@ npm run dev
 ```bash
 cd admin
 npm install
-# .env: VITE_API_URL=http://localhost:8000
+# .env: VITE_API_URL=http://localhost:8000, VITE_MAPBOX_TOKEN=<your-mapbox-token>  (optional, for Map page)
 npm run dev
 ```
 
-→ http://localhost:5174 — Demo Login as Admin.
+→ http://localhost:5174 — Demo Login as Admin. Use “Load demo data” on the dashboard to seed workers, clients, shifts, and **map data** (all with geo coordinates so the Map page shows heatmap and worker pins).
 
 ---
 
@@ -161,7 +187,7 @@ When the backend has `AUTH_DEV_MODE=true`, both apps offer **Demo Login** (no pa
 - **Mobile:** Login page → “Demo: Admin” or “Demo: Worker” → JWT stored, redirect to schedule.
 - **Admin:** `/admin/login` → same options → redirect to dashboard.
 
-Ensure demo users exist: run `python -m app.utils.seed_demo` in the backend.
+Ensure demo users exist: run `python -m app.utils.seed_demo` in the backend (or use “Load demo data” in the admin dashboard). The seed creates 13 workers and 25 clients **with geo coordinates** (address_location, current_location) so the **Map page** shows heatmap and worker pins.
 
 ---
 
@@ -170,11 +196,27 @@ Ensure demo users exist: run `python -m app.utils.seed_demo` in the backend.
 | Area | Endpoints |
 |------|-----------|
 | Auth | `POST /auth/dev-login`, `GET /auth/me` |
+| Geo (v1) | `GET /api/v1/geo/heatmap` (GeoJSON for map heatmap) |
+| Stats (v1) | `GET /api/v1/stats/dashboard-summary` (weekly trends, city distribution, budget usage, KPIs, top workers) |
 | Shifts | `GET/PATCH /shifts`, `PATCH /shifts/{id}/check-in`, `PATCH /shifts/{id}/check-out`, `GET /shifts/{id}/suggest-substitutes` |
 | Workers | `GET /workers`, `POST /workers/{id}/sick-leave` |
 | Clients | `GET /clients`, `GET /clients/{id}/budget-status?month=`, `GET /clients/budget-alerts?month=` |
 | Billing | `GET /exports/billing?month=` (SGB XI CSV) |
 | Audit | `GET /audit-logs` (Admin, read-only) |
+
+---
+
+## Recent updates
+
+**February 2026**
+
+- **Logo:** All references use `logo_hausheld.png` (from `frontend/public`; copied to `admin/public`) on login pages, admin sidebar, and mobile header.
+- **Dashboard:** Removed duplicate navigation cards (Calendar, Workers, Clients, Billing, Audit) from the dashboard; navigation is via sidebar only. Dashboard now focuses on stat cards, summary KPIs, and premium Recharts analytics (AreaCharts, DonutCharts, bar charts with gradients and consistent tooltips).
+- **Stats API:** New `GET /api/v1/stats/dashboard-summary` returns weekly shift trends, city distribution (Essen/Düsseldorf/Köln), budget usage, total workers/clients, monthly revenue, and top 5 workers by completed shifts. Consumed by the dashboard summary section.
+- **Map page:** Admin Map uses Mapbox + Deck.gl (heatmap + worker pins); fit bounds and legend. Heatmap data from `GET /api/v1/geo/heatmap`; workers from `GET /workers`. Requires `VITE_MAPBOX_TOKEN` for the base map.
+- **Demo seed:** Seed script and final print now explicitly mention map data: every client has `address_location`, every worker has `current_location`, so the Map page shows heatmap and pins after running the seed (or “Load demo data”).
+- **Favicon:** Removed `/vite.svg` reference from admin `index.html` to avoid 404.
+- **Recharts:** Tooltip formatters updated to accept both number and array (fixes “number is not iterable” in production).
 
 ---
 
