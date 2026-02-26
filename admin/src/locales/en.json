@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "workers": "Workers",
+    "clients": "Clients",
+    "billing": "Billing",
+    "audit": "Audit Log",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Command center for Hausheld administration.",
+    "loading": "Loading stats…",
+    "noData": "No data yet",
+    "noDataHint": "Load demo workers, clients, and shifts to explore the dashboard. You can also run the backend seed script (see README).",
+    "loadDemo": "Load demo data",
+    "workers": "Workers",
+    "clients": "Clients",
+    "unassigned": "Unassigned (this week)",
+    "budgetAlerts": "Budget alerts",
+    "budgetAlertsHint": "below 15% this month",
+    "analytics": "Analytics",
+    "shiftsPerWeek": "Shifts per week",
+    "shiftStatus": "Shift status",
+    "budgetUsed": "Budget used (%) — clients with alerts",
+    "completedByWorker": "Completed shifts by worker (this month)"
+  },
+  "login": {
+    "title": "Hausheld Admin",
+    "subtitle": "Demo login",
+    "cardTitle": "Demo Login",
+    "cardDescription": "Skip manual login. Backend must have AUTH_DEV_MODE=true. Run the seed script so these accounts exist.",
+    "demoAdmin": "Demo: Admin",
+    "demoWorker": "Demo: Worker (Essen)",
+    "loggedInAdmin": "Logged in as Admin",
+    "loggedInWorker": "Logged in as Worker",
+    "loginFailed": "Login failed"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Your account details.",
+    "role": "Role",
+    "settings": "Settings",
+    "logout": "Log out",
+    "failed": "Failed to load profile."
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "App preferences.",
+    "language": "Language",
+    "languageDescription": "Choose the interface language.",
+    "languageLabel": "Interface language"
+  },
+  "common": {
+    "open": "Open"
+  }
+}

@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Calendar, Users, Building2, CreditCard, LayoutDashboard, FileText, Loader2 } from "lucide-react";
+import { Calendar, Users, Building2, CreditCard, LayoutDashboard, FileText, Loader2, LogOut, User, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { getAuthToken } from "@/lib/api";
+import { clearAuthToken, getAuthToken } from "@/lib/api";
 
 const nav = [
-  { to: "/admin", end: true, label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/calendar", end: false, label: "Calendar", icon: Calendar },
-  { to: "/admin/workers", end: false, label: "Workers", icon: Users },
-  { to: "/admin/clients", end: false, label: "Clients", icon: Building2 },
-  { to: "/admin/billing", end: false, label: "Billing", icon: CreditCard },
-  { to: "/admin/audit", end: false, label: "Audit Log", icon: FileText },
+  { to: "/admin", end: true, labelKey: "nav.dashboard", icon: LayoutDashboard },
+  { to: "/admin/calendar", end: false, labelKey: "nav.calendar", icon: Calendar },
+  { to: "/admin/workers", end: false, labelKey: "nav.workers", icon: Users },
+  { to: "/admin/clients", end: false, labelKey: "nav.clients", icon: Building2 },
+  { to: "/admin/billing", end: false, labelKey: "nav.billing", icon: CreditCard },
+  { to: "/admin/audit", end: false, labelKey: "nav.audit", icon: FileText },
+  { to: "/admin/profile", end: false, labelKey: "nav.profile", icon: User },
+  { to: "/admin/settings", end: false, labelKey: "nav.settings", icon: Settings },
 ];
 
 export function DashboardLayout() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
   const [hasToken, setHasToken] = useState(false);
@@ -28,6 +32,11 @@ export function DashboardLayout() {
     if (!hasToken) navigate("/admin/login", { replace: true });
   }, [ready, hasToken, navigate]);
 
+  function handleLogout() {
+    clearAuthToken();
+    navigate("/admin/login", { replace: true });
+  }
+
   if (!ready || !hasToken) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -38,14 +47,20 @@ export function DashboardLayout() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="flex w-64 flex-col border-r bg-card">
-        <div className="flex h-16 items-center gap-2 border-b px-6">
-          <Link to="/admin" className="font-semibold text-primary">
-            Hausheld Admin
+      <aside className="flex w-64 flex-col border-r border-border/80 bg-card bg-gradient-to-b from-card to-muted/30">
+        <div className="flex h-16 items-center gap-2 border-b px-4">
+          <Link to="/admin" className="flex items-center gap-2 font-semibold text-primary">
+            <img
+              src="/logo-hausheld-ki.png"
+              alt=""
+              className="h-9 w-auto object-contain"
+              aria-hidden
+            />
+            <span>Hausheld Admin</span>
           </Link>
         </div>
         <nav className="flex flex-1 flex-col gap-1 p-4">
-          {nav.map(({ to, end, label, icon: Icon }) => (
+          {nav.map(({ to, end, labelKey, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -58,10 +73,20 @@ export function DashboardLayout() {
               }
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden />
-              {label}
+              {t(labelKey)}
             </NavLink>
           ))}
         </nav>
+        <div className="border-t p-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <LogOut className="h-5 w-5 shrink-0" aria-hidden />
+            {t("nav.logout")}
+          </button>
+        </div>
       </aside>
       <main className="flex-1 overflow-auto p-6">
         <Outlet />

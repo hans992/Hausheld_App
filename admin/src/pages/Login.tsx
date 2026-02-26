@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shield, User, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { devLogin, setAuthToken } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ const DEMO_EMAILS = {
 } as const;
 
 export function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<"admin" | "worker" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -23,10 +25,10 @@ export function Login() {
     try {
       const res = await devLogin(email);
       setAuthToken(res.access_token);
-      toast.success(role === "admin" ? "Logged in as Admin" : "Logged in as Worker");
+      toast.success(role === "admin" ? t("login.loggedInAdmin") : t("login.loggedInWorker"));
       navigate("/admin", { replace: true });
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Login failed";
+      const message = e instanceof Error ? e.message : t("login.loginFailed");
       setError(message);
       toast.error(message);
     } finally {
@@ -37,16 +39,21 @@ export function Login() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Hausheld Admin</h1>
-          <p className="text-muted-foreground">Demo login</p>
+        <div className="flex flex-col items-center text-center">
+          <img
+            src="/logo-hausheld-ki.png"
+            alt="Hausheld KI"
+            className="h-14 w-auto max-w-[200px] object-contain"
+          />
+          <h1 className="mt-4 text-2xl font-bold">{t("login.title")}</h1>
+          <p className="text-muted-foreground">{t("login.subtitle")}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Demo Login</CardTitle>
+            <CardTitle>{t("login.cardTitle")}</CardTitle>
             <CardDescription>
-              Skip manual login. Backend must have AUTH_DEV_MODE=true. Run the seed script so these accounts exist.
+              {t("login.cardDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -67,7 +74,7 @@ export function Login() {
               ) : (
                 <Shield className="h-5 w-5" aria-hidden />
               )}
-              Demo: Admin
+              {t("login.demoAdmin")}
             </Button>
             <Button
               className="w-full"
@@ -81,7 +88,7 @@ export function Login() {
               ) : (
                 <User className="h-5 w-5" aria-hidden />
               )}
-              Demo: Worker (Essen)
+              {t("login.demoWorker")}
             </Button>
           </CardContent>
         </Card>

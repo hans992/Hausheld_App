@@ -35,6 +35,12 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
       },
+      borderRadius: {
+        card: "var(--radius-card, 1rem)",
+      },
+      boxShadow: {
+        soft: "var(--shadow-soft)",
+      },
     },
   },
   plugins: [],

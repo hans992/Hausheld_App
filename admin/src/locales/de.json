@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Kalender",
+    "workers": "Mitarbeiter",
+    "clients": "Klienten",
+    "billing": "Abrechnung",
+    "audit": "Audit-Log",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Steuerzentrale für die Hausheld-Administration.",
+    "loading": "Lade Statistiken…",
+    "noData": "Noch keine Daten",
+    "noDataHint": "Lade Demo-Mitarbeiter, Klienten und Schichten, um das Dashboard zu erkunden. Sie können auch das Backend-Seed-Skript ausführen (siehe README).",
+    "loadDemo": "Demo-Daten laden",
+    "workers": "Mitarbeiter",
+    "clients": "Klienten",
+    "unassigned": "Nicht zugewiesen (diese Woche)",
+    "budgetAlerts": "Budget-Warnungen",
+    "budgetAlertsHint": "unter 15 % in diesem Monat",
+    "analytics": "Analysen",
+    "shiftsPerWeek": "Schichten pro Woche",
+    "shiftStatus": "Schicht-Status",
+    "budgetUsed": "Budget genutzt (%) — Klienten mit Warnung",
+    "completedByWorker": "Abgeschlossene Schichten pro Mitarbeiter (dieser Monat)"
+  },
+  "login": {
+    "title": "Hausheld Admin",
+    "subtitle": "Demo-Anmeldung",
+    "cardTitle": "Demo-Anmeldung",
+    "cardDescription": "Anmeldung überspringen. Backend muss AUTH_DEV_MODE=true haben. Führen Sie das Seed-Skript aus, damit diese Konten existieren.",
+    "demoAdmin": "Demo: Admin",
+    "demoWorker": "Demo: Mitarbeiter (Essen)",
+    "loggedInAdmin": "Als Admin angemeldet",
+    "loggedInWorker": "Als Mitarbeiter angemeldet",
+    "loginFailed": "Anmeldung fehlgeschlagen"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Ihre Kontodaten.",
+    "role": "Rolle",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "failed": "Profil konnte nicht geladen werden."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "description": "App-Einstellungen.",
+    "language": "Sprache",
+    "languageDescription": "Wählen Sie die Anzeigesprache.",
+    "languageLabel": "Anzeigesprache"
+  },
+  "common": {
+    "open": "Öffnen"
+  }
+}

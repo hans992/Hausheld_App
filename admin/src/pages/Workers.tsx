@@ -209,7 +209,7 @@ export function Workers() {
                   </TableCell>
                 </TableRow>
               ))
-              }
+              )}
             </TableBody>
           </Table>
         </CardContent>

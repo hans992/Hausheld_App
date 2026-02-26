@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "schedule": "Plan",
+    "clients": "Klienten",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Anmeldung & Einstellungen",
+    "login": "Anmeldung",
+    "loginDescription": "Melde dich mit Demo-Login an, um deinen Plan und Klienten zu sehen. Der Administrator erstellt dein Konto.",
+    "demoLogin": "Demo-Login",
+    "demoLoginDescription": "Auf der Login-Seite kannst du ohne Passwort als Admin oder Mitarbeiter (Demo) einsteigen.",
+    "goToLogin": "Zur Anmeldung",
+    "logout": "Abmelden",
+    "role": "Rolle",
+    "settings": "Einstellungen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "description": "App-Einstellungen.",
+    "language": "Sprache",
+    "languageDescription": "Wähle die Anzeigesprache.",
+    "languageLabel": "Anzeigesprache"
+  }
+}

@@ -2,10 +2,10 @@
 Seed a demo dataset for local development and UI demos.
 
 Creates:
-1) 3 Workers: 1 Admin (admin@demo.com) + 2 Workers in Essen and Düsseldorf
-2) 5 Clients with realistic Pflegegrad (1-5) and NRW addresses
-3) 10 Shifts: mix of Scheduled / In_Progress / Unassigned and 2 Completed with mock signature keys
-4) Budget alerts: completed shifts with costs high enough to trigger remaining_budget < 15% for a few clients
+1) 13 Workers: 1 Admin (admin@demo.com) + 12 Workers across NRW cities
+2) 25 Clients with varied Krankenkassen, Pflegegrad (1-5), and 4-6 facility-style (Krankenhaus, Pflegeheim, etc.)
+3) 20+ Shifts: mix of Scheduled / In_Progress / Unassigned and Completed with mock signature keys
+4) Budget alerts: completed shifts with costs high enough to trigger remaining_budget < 15% for some clients
 
 Usage:
   python -m app.utils.seed_demo
@@ -44,7 +44,25 @@ NRW_POINTS: dict[str, Point] = {
     "Köln": Point(lon=6.9603, lat=50.9375),
     "Dortmund": Point(lon=7.4660, lat=51.5136),
     "Bochum": Point(lon=7.2162, lat=51.4818),
+    "Wuppertal": Point(lon=7.0982, lat=51.2562),
+    "Münster": Point(lon=7.6281, lat=51.9607),
 }
+
+# German health insurers (Krankenkassen) for variety across clients
+INSURANCES: list[str] = [
+    "AOK Rheinland/Hamburg",
+    "AOK NORDWEST",
+    "TK",
+    "Barmer",
+    "DAK-Gesundheit",
+    "IKK classic",
+    "BKK Mobil Oil",
+    "Techniker Krankenkasse",
+    "Knappschaft",
+    "HEK",
+    "Viactiv",
+    "BARMER",
+]
 
 
 def _pt(p: Point) -> WKTElement:
@@ -108,7 +126,93 @@ async def seed_demo() -> None:
             current_location=_pt(NRW_POINTS["Düsseldorf"]),
             is_available=True,
         )
-        db.add_all([admin, worker_essen, worker_duesseldorf])
+        worker_koeln = Worker(
+            name="Demo Worker Köln",
+            email="worker-koeln@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=40,
+            current_location=_pt(NRW_POINTS["Köln"]),
+            is_available=True,
+        )
+        worker_dortmund = Worker(
+            name="Demo Worker Dortmund",
+            email="worker-dortmund@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=20,
+            current_location=_pt(NRW_POINTS["Dortmund"]),
+            is_available=True,
+        )
+        worker_bochum = Worker(
+            name="Demo Worker Bochum",
+            email="worker-bochum@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=40,
+            current_location=_pt(NRW_POINTS["Bochum"]),
+            is_available=True,
+        )
+        worker_wuppertal = Worker(
+            name="Demo Worker Wuppertal",
+            email="worker-wuppertal@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=20,
+            current_location=_pt(NRW_POINTS["Wuppertal"]),
+            is_available=True,
+        )
+        worker_muenster = Worker(
+            name="Demo Worker Münster",
+            email="worker-muenster@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=40,
+            current_location=_pt(NRW_POINTS["Münster"]),
+            is_available=True,
+        )
+        worker_essen2 = Worker(
+            name="Demo Worker Essen 2",
+            email="worker-essen2@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=20,
+            current_location=_pt(NRW_POINTS["Essen"]),
+            is_available=True,
+        )
+        worker_koeln2 = Worker(
+            name="Demo Worker Köln 2",
+            email="worker-koeln2@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=40,
+            current_location=_pt(NRW_POINTS["Köln"]),
+            is_available=False,  # sick leave demo
+        )
+        worker_dortmund2 = Worker(
+            name="Demo Worker Dortmund 2",
+            email="worker-dortmund2@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=40,
+            current_location=_pt(NRW_POINTS["Dortmund"]),
+            is_available=True,
+        )
+        worker_bochum2 = Worker(
+            name="Demo Worker Bochum 2",
+            email="worker-bochum2@demo.com",
+            role=WorkerRole.WORKER,
+            contract_hours=20,
+            current_location=_pt(NRW_POINTS["Bochum"]),
+            is_available=False,  # sick leave demo
+        )
+        all_workers = [
+            admin,
+            worker_essen,
+            worker_duesseldorf,
+            worker_koeln,
+            worker_dortmund,
+            worker_bochum,
+            worker_wuppertal,
+            worker_muenster,
+            worker_essen2,
+            worker_koeln2,
+            worker_dortmund2,
+            worker_bochum2,
+        ]
+        db.add_all(all_workers)
         await db.flush()  # ids
 
         # --- Clients (NRW) ---
@@ -158,12 +262,198 @@ async def seed_demo() -> None:
                 monthly_budget=Decimal("125.00"),
                 address_location=_pt(NRW_POINTS["Bochum"]),
             ),
+            # --- Facility-style clients (Krankenhäuser / Pflegeheime) ---
+            Client(
+                name="Demo Krankenhaus Essen Mitte",
+                address="Hufelandstr. 55, 45147 Essen, NRW",
+                insurance_provider=INSURANCES[0],
+                insurance_number=encrypt_value("AOK-DEMO-KH-ESSEN"),
+                care_level=encrypt_value("3"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Essen"]),
+            ),
+            Client(
+                name="Demo Pflegeheim Köln-Nord",
+                address="Neusser Str. 450, 50733 Köln, NRW",
+                insurance_provider=INSURANCES[2],
+                insurance_number=encrypt_value("TK-DEMO-PFLEGE-KOELN"),
+                care_level=encrypt_value("4"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Köln"]),
+            ),
+            Client(
+                name="Demo Reha-Zentrum Düsseldorf",
+                address="Ludenberger Str. 30, 40629 Düsseldorf, NRW",
+                insurance_provider=INSURANCES[3],
+                insurance_number=encrypt_value("BARMER-DEMO-REHA-DUS"),
+                care_level=encrypt_value("2"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Düsseldorf"]),
+            ),
+            Client(
+                name="Demo Seniorenresidenz Dortmund",
+                address="Ruhrallee 12, 44139 Dortmund, NRW",
+                insurance_provider=INSURANCES[4],
+                insurance_number=encrypt_value("DAK-DEMO-SEN-DORTMUND"),
+                care_level=encrypt_value("5"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Dortmund"]),
+            ),
+            Client(
+                name="Demo Klinik Bochum",
+                address="Bergstr. 26, 44791 Bochum, NRW",
+                insurance_provider=INSURANCES[7],
+                insurance_number=encrypt_value("TK-DEMO-KLINIK-BOCHUM"),
+                care_level=encrypt_value("3"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Bochum"]),
+            ),
+            Client(
+                name="Demo Pflegeheim Wuppertal",
+                address="Elberfelder Str. 75, 42103 Wuppertal, NRW",
+                insurance_provider=INSURANCES[8],
+                insurance_number=encrypt_value("KNAPP-DEMO-PFLEGE-WUP"),
+                care_level=encrypt_value("4"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Wuppertal"]),
+            ),
+            # --- Additional private clients (14 more to reach 25 total) ---
+            Client(
+                name="Demo Client Essen Nord (Pflegegrad 1)",
+                address="Altenessener Str. 400, 45329 Essen, NRW",
+                insurance_provider=INSURANCES[5],
+                insurance_number=encrypt_value("IKK-DEMO-ESSEN-NORD"),
+                care_level=encrypt_value("1"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Essen"]),
+            ),
+            Client(
+                name="Demo Client Düsseldorf Süd (Pflegegrad 2)",
+                address="Benrather Str. 8, 40213 Düsseldorf, NRW",
+                insurance_provider=INSURANCES[6],
+                insurance_number=encrypt_value("BKK-DEMO-DUS-SUD"),
+                care_level=encrypt_value("2"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Düsseldorf"]),
+            ),
+            Client(
+                name="Demo Client Köln West (Pflegegrad 4)",
+                address="Venloer Str. 250, 50823 Köln, NRW",
+                insurance_provider=INSURANCES[9],
+                insurance_number=encrypt_value("HEK-DEMO-KOELN-WEST"),
+                care_level=encrypt_value("4"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Köln"]),
+            ),
+            Client(
+                name="Demo Client Dortmund Ost (Pflegegrad 3)",
+                address="Schützenstr. 45, 44147 Dortmund, NRW",
+                insurance_provider=INSURANCES[10],
+                insurance_number=encrypt_value("VIACTIV-DEMO-DORTMUND"),
+                care_level=encrypt_value("3"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Dortmund"]),
+            ),
+            Client(
+                name="Demo Client Bochum Süd (Pflegegrad 2)",
+                address="Hattinger Str. 300, 44795 Bochum, NRW",
+                insurance_provider=INSURANCES[11],
+                insurance_number=encrypt_value("BARMER-DEMO-BOCHUM-SUD"),
+                care_level=encrypt_value("2"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Bochum"]),
+            ),
+            Client(
+                name="Demo Client Wuppertal (Pflegegrad 5)",
+                address="Friedrich-Engels-Allee 100, 42285 Wuppertal, NRW",
+                insurance_provider=INSURANCES[0],
+                insurance_number=encrypt_value("AOK-DEMO-WUPPERTAL"),
+                care_level=encrypt_value("5"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Wuppertal"]),
+            ),
+            Client(
+                name="Demo Client Münster (Pflegegrad 1)",
+                address="Ludgeristr. 60, 48143 Münster, NRW",
+                insurance_provider=INSURANCES[1],
+                insurance_number=encrypt_value("AOK-NW-DEMO-MUENSTER"),
+                care_level=encrypt_value("1"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Münster"]),
+            ),
+            Client(
+                name="Demo Client Essen Süd (Pflegegrad 3)",
+                address="Steeler Str. 200, 45136 Essen, NRW",
+                insurance_provider=INSURANCES[2],
+                insurance_number=encrypt_value("TK-DEMO-ESSEN-SUD"),
+                care_level=encrypt_value("3"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Essen"]),
+            ),
+            Client(
+                name="Demo Client Düsseldorf Ost (Pflegegrad 4)",
+                address="Oberkasseler Str. 88, 40545 Düsseldorf, NRW",
+                insurance_provider=INSURANCES[3],
+                insurance_number=encrypt_value("BARMER-DEMO-DUS-OST"),
+                care_level=encrypt_value("4"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Düsseldorf"]),
+            ),
+            Client(
+                name="Demo Client Köln Süd (Pflegegrad 2)",
+                address="Bonner Str. 150, 50968 Köln, NRW",
+                insurance_provider=INSURANCES[4],
+                insurance_number=encrypt_value("DAK-DEMO-KOELN-SUD"),
+                care_level=encrypt_value("2"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Köln"]),
+            ),
+            Client(
+                name="Demo Client Dortmund West (Pflegegrad 5)",
+                address="Münsterstr. 250, 44145 Dortmund, NRW",
+                insurance_provider=INSURANCES[5],
+                insurance_number=encrypt_value("IKK-DEMO-DORTMUND-WEST"),
+                care_level=encrypt_value("5"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Dortmund"]),
+            ),
+            Client(
+                name="Demo Client Bochum Nord (Pflegegrad 1)",
+                address="Ostring 25, 44787 Bochum, NRW",
+                insurance_provider=INSURANCES[6],
+                insurance_number=encrypt_value("BKK-DEMO-BOCHUM-NORD"),
+                care_level=encrypt_value("1"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Bochum"]),
+            ),
+            Client(
+                name="Demo Client Wuppertal Nord (Pflegegrad 3)",
+                address="Gathe 55, 42107 Wuppertal, NRW",
+                insurance_provider=INSURANCES[7],
+                insurance_number=encrypt_value("TK-DEMO-WUPPERTAL-NORD"),
+                care_level=encrypt_value("3"),
+                monthly_budget=Decimal("131.00"),
+                address_location=_pt(NRW_POINTS["Wuppertal"]),
+            ),
+            Client(
+                name="Demo Client Münster Süd (Pflegegrad 4)",
+                address="Weseler Str. 100, 48155 Münster, NRW",
+                insurance_provider=INSURANCES[8],
+                insurance_number=encrypt_value("KNAPP-DEMO-MUENSTER-SUD"),
+                care_level=encrypt_value("4"),
+                monthly_budget=Decimal("125.00"),
+                address_location=_pt(NRW_POINTS["Münster"]),
+            ),
         ]
         db.add_all(clients)
         await db.flush()
 
         # --- Shifts ---
-        c_essen, c_dus, c_koeln, c_dortmund, c_bochum = clients
+        c_essen, c_dus, c_koeln, c_dortmund, c_bochum = clients[0], clients[1], clients[2], clients[3], clients[4]
+        # Facility and extra clients for more shifts
+        c_kh_essen, c_pflege_koeln, c_reha_dus = clients[5], clients[6], clients[7]
+        c_senioren_dortmund, c_klinik_bochum = clients[8], clients[9]
+        c_essen_nord, c_dus_sud, c_koeln_west = clients[11], clients[12], clients[13]
 
         def mk_shift(
             *,
@@ -313,16 +603,85 @@ async def seed_demo() -> None:
             ),
         ]
 
-        # Ensure exactly 10 shifts
-        assert len(shifts) == 10, f"Expected 10 shifts, got {len(shifts)}"
+        # Additional shifts with new workers and clients
+        shifts += [
+            mk_shift(
+                worker=worker_koeln,
+                client=c_pflege_koeln,
+                start=tomorrow_9 + timedelta(days=1, hours=2),
+                end=tomorrow_9 + timedelta(days=1, hours=4),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Cleaning,Care",
+            ),
+            mk_shift(
+                worker=worker_dortmund,
+                client=c_senioren_dortmund,
+                start=tomorrow_9 + timedelta(days=2),
+                end=tomorrow_9 + timedelta(days=2, hours=3),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Chores,Companion",
+            ),
+            mk_shift(
+                worker=worker_bochum,
+                client=c_klinik_bochum,
+                start=tomorrow_9 + timedelta(days=3, hours=2),
+                end=tomorrow_9 + timedelta(days=3, hours=5),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Support",
+            ),
+            mk_shift(
+                worker=worker_muenster,
+                client=clients[20],
+                start=tomorrow_9 + timedelta(days=4),
+                end=tomorrow_9 + timedelta(days=4, hours=2),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Cleaning,Shopping",
+            ),
+            mk_shift(
+                worker=worker_essen2,
+                client=c_essen_nord,
+                start=tomorrow_9 + timedelta(days=5),
+                end=tomorrow_9 + timedelta(days=5, hours=2),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Cleaning",
+            ),
+            mk_shift(
+                worker=worker_dortmund2,
+                client=c_koeln_west,
+                start=tomorrow_9 + timedelta(days=5, hours=1),
+                end=tomorrow_9 + timedelta(days=5, hours=4),
+                status=ShiftStatus.SCHEDULED,
+                tasks="Cooking,Chores",
+            ),
+            mk_shift(
+                worker=None,
+                client=c_reha_dus,
+                start=tomorrow_9 + timedelta(days=6),
+                end=tomorrow_9 + timedelta(days=6, hours=3),
+                status=ShiftStatus.UNASSIGNED,
+                tasks="Care",
+            ),
+            mk_shift(
+                worker=None,
+                client=c_kh_essen,
+                start=tomorrow_9 + timedelta(days=7, hours=2),
+                end=tomorrow_9 + timedelta(days=7, hours=5),
+                status=ShiftStatus.UNASSIGNED,
+                tasks="Support",
+            ),
+        ]
+
+        # Ensure we have a good number of shifts (18+)
+        assert len(shifts) >= 18, f"Expected at least 18 shifts, got {len(shifts)}"
+        num_shifts = len(shifts)
 
         db.add_all(shifts)
         await db.commit()
 
     print("Demo seed complete:")
-    print("  - Workers: admin@demo.com, worker-essen@demo.com, worker-duesseldorf@demo.com")
-    print("  - Clients: 5 demo clients (NRW)")
-    print("  - Shifts: 10 (includes 2 Completed with signature keys; some Unassigned for substitutions)")
+    print("  - Workers: 13 (1 Admin + 12 Workers across NRW; 2 on sick leave)")
+    print("  - Clients: 25 (5 original + 6 facilities/Krankenhäuser + 14 private; varied Krankenkassen)")
+    print(f"  - Shifts: {num_shifts} (mix of Scheduled, In Progress, Unassigned, Completed; 2 Completed with budget alerts)")
     print("  - Budget alerts: triggered for Essen + Düsseldorf demo clients in the current month")
 
 

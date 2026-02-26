@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "schedule": "Schedule",
+    "clients": "Clients",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Login & settings",
+    "login": "Login",
+    "loginDescription": "Sign in with demo login to see your schedule and clients. The administrator creates your account.",
+    "demoLogin": "Demo login",
+    "demoLoginDescription": "On the login page you can sign in without a password as Admin or Worker (demo).",
+    "goToLogin": "Go to login",
+    "logout": "Log out",
+    "role": "Role",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "App settings.",
+    "language": "Language",
+    "languageDescription": "Choose the display language.",
+    "languageLabel": "Display language"
+  }
+}

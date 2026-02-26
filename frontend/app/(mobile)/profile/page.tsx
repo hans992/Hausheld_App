@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +13,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { clearAuthToken, getAuthToken } from "@/lib/api";
+import { clearAuthToken, getAuthToken, getMe } from "@/lib/api";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [hasToken, setHasToken] = useState(false);
+  const [me, setMe] = useState<{ id: number; email: string; name: string; role: string } | null>(null);
+
   useEffect(() => {
     setHasToken(!!getAuthToken());
   }, []);
+
+  useEffect(() => {
+    if (!hasToken) return;
+    getMe()
+      .then(setMe)
+      .catch(() => setMe(null));
+  }, [hasToken]);
 
   function handleLogout() {
     clearAuthToken();
@@ -34,32 +45,52 @@ export default function ProfilePage() {
           <User className="h-6 w-6 text-primary" aria-hidden />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">Profil</h1>
-          <p className="text-muted-foreground">Anmeldung & Einstellungen</p>
+          <h1 className="text-2xl font-bold">{t("profile.title")}</h1>
+          <p className="text-muted-foreground">{t("profile.subtitle")}</p>
         </div>
       </div>
 
+      {hasToken && me && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{me.name}</CardTitle>
+            <CardDescription>{me.email}</CardDescription>
+            <p className="text-sm text-muted-foreground">
+              {t("profile.role")}: {me.role}
+            </p>
+            <div className="mt-2 flex gap-2">
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/settings">
+                  <Settings className="h-5 w-5 mr-2" aria-hidden />
+                  {t("profile.settings")}
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
-          <CardTitle>Anmeldung</CardTitle>
+          <CardTitle>{t("profile.login")}</CardTitle>
           <CardDescription>
-            Melde dich mit Demo-Login an, um deinen Plan und Klienten zu sehen. Der Administrator erstellt dein Konto.
+            {t("profile.loginDescription")}
           </CardDescription>
         </CardHeader>
         <Card className="mt-4">
           <CardHeader>
-            <CardTitle>Demo-Login</CardTitle>
+            <CardTitle>{t("profile.demoLogin")}</CardTitle>
             <CardDescription>
-              Auf der Login-Seite kannst du ohne Passwort als Admin oder Mitarbeiter (Demo) einsteigen.
+              {t("profile.demoLoginDescription")}
             </CardDescription>
             <div className="mt-2 flex gap-2">
               <Button size="lg" asChild>
-                <Link href="/login">Zur Anmeldung</Link>
+                <Link href="/login">{t("profile.goToLogin")}</Link>
               </Button>
               {hasToken && (
                 <Button size="lg" variant="outline" onClick={handleLogout}>
                   <LogOut className="h-5 w-5" aria-hidden />
-                  Abmelden
+                  {t("profile.logout")}
                 </Button>
               )}
             </div>

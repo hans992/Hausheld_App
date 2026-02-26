@@ -16,6 +16,17 @@ export function clearAuthToken() {
   localStorage.removeItem("hausheld_token");
 }
 
+export interface MeResponse {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+}
+
+export async function getMe(): Promise<MeResponse> {
+  return fetchApi<MeResponse>("/auth/me");
+}
+
 /** Demo / dev login: get JWT by email. No Authorization header. */
 export async function devLogin(email: string): Promise<{ access_token: string; token_type: string; expires_in_seconds: number }> {
   const res = await fetch(`${API_BASE}/auth/dev-login`, {

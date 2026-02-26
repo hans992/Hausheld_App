@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
+import "@/i18n";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { Dashboard } from "@/pages/Dashboard";
 import { Calendar } from "@/pages/Calendar";
@@ -10,6 +11,8 @@ import { Clients } from "@/pages/Clients";
 import { Billing } from "@/pages/Billing";
 import { Audit } from "@/pages/Audit";
 import { Login } from "@/pages/Login";
+import { Profile } from "@/pages/Profile";
+import { Settings } from "@/pages/Settings";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -24,6 +27,8 @@ createRoot(document.getElementById("root")!).render(
           <Route path="clients" element={<Clients />} />
           <Route path="billing" element={<Billing />} />
           <Route path="audit" element={<Audit />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="/" element={<Navigate to="/admin" replace />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
