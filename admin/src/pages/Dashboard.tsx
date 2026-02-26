@@ -80,7 +80,7 @@ function buildStatusData(shifts: Shift[]): { name: string; value: number; fill: 
   shifts.forEach((s) => {
     counts[s.status] = (counts[s.status] ?? 0) + 1;
   });
-  const COLORS = ["hsl(var(--primary))", "hsl(var(--muted-foreground))", "#22c55e", "#eab308"];
+  const COLORS = ["#64748b", "#4f46e5", "#f43f5e", "#eab308"]; // slate, indigo, rose, amber
   return Object.entries(counts).map(([name, value], i) => ({ name, value, fill: COLORS[i % COLORS.length] }));
 }
 
@@ -291,9 +291,9 @@ export function Dashboard() {
               </Card>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
-              <Card>
+              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Weekly Shift Trends</CardTitle>
+                  <CardTitle className="text-base font-medium">Weekly Shift Trends</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[200px]">
@@ -303,31 +303,35 @@ export function Dashboard() {
                           ...d,
                           shortDate: new Date(d.date).toLocaleDateString("de-DE", { weekday: "short", day: "numeric" }),
                         }))}
-                        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                        margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
                       >
                         <defs>
-                          <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                          <linearGradient id="summaryTrendGradient" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
                             <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                        <XAxis dataKey="shortDate" tick={{ fontSize: 11 }} />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" vertical={false} />
+                        <XAxis dataKey="shortDate" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                         <YAxis
                           domain={[0, Math.max(1, ...(summary.weekly_shift_trends ?? []).map((d) => d.count))]}
                           allowDecimals={false}
                           tick={{ fontSize: 11 }}
+                          axisLine={false}
+                          tickLine={false}
+                          width={28}
                         />
                         <Tooltip
-                          formatter={([v]: [number]) => [v, "Shifts"]}
+                          formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, "Shifts"]}
                           labelFormatter={(_, payload) => payload?.[0]?.payload?.date ?? ""}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
                         />
                         <Area
                           type="monotone"
                           dataKey="count"
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
-                          fill="url(#trendGradient)"
+                          fill="url(#summaryTrendGradient)"
                           isAnimationActive
                         />
                       </AreaChart>
@@ -335,9 +339,9 @@ export function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">City Distribution</CardTitle>
+                  <CardTitle className="text-base font-medium">City Distribution</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[200px]">
@@ -358,17 +362,22 @@ export function Dashboard() {
                             <Cell
                               key={`cell-summary-${index}`}
                               fill={["#64748b", "#4f46e5", "#f43f5e"][index % 3]}
+                              stroke="hsl(var(--card))"
+                              strokeWidth={1.5}
                             />
                           ))}
                         </Pie>
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip
+                          formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                        />
+                        <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 8 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Top 5 Workers (Completed Shifts)</CardTitle>
                 </CardHeader>
@@ -405,29 +414,48 @@ export function Dashboard() {
         )}
         {shiftsList.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">{t("dashboard.analytics")}</h2>
+            <h2 className="text-lg font-semibold tracking-tight">{t("dashboard.analytics")}</h2>
             <div className="grid gap-4 lg:grid-cols-2">
-              <Card>
+              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{t("dashboard.shiftsPerWeek")}</CardTitle>
+                  <CardTitle className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={buildShiftsByWeekData(shiftsList)} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                        <XAxis dataKey="week" tick={{ fontSize: 11 }} />
-                        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                        <Tooltip />
-                        <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                      <AreaChart
+                        data={buildShiftsByWeekData(shiftsList)}
+                        margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="analyticsWeekGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" vertical={false} />
+                        <XAxis dataKey="week" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+                        <Tooltip
+                          formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, t("dashboard.shiftsPerWeek")]}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="count"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fill="url(#analyticsWeekGradient)"
+                          isAnimationActive
+                        />
+                      </AreaChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{t("dashboard.shiftStatus")}</CardTitle>
+                  <CardTitle className="text-base font-medium">{t("dashboard.shiftStatus")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[220px]">
@@ -439,24 +467,29 @@ export function Dashboard() {
                           nameKey="name"
                           cx="50%"
                           cy="50%"
-                          outerRadius={70}
-                          label={({ name, value }) => `${name}: ${value}`}
+                          innerRadius={52}
+                          outerRadius={72}
+                          paddingAngle={3}
+                          label={false}
                         >
                           {buildStatusData(shiftsList).map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                            <Cell key={`cell-${index}`} fill={entry.fill} stroke="hsl(var(--card))" strokeWidth={1.5} />
                           ))}
                         </Pie>
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip
+                          formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                        />
+                        <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 8 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
               {budgetAlertsList.length > 0 && (
-                <Card>
+                <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{t("dashboard.budgetUsed")}</CardTitle>
+                    <CardTitle className="text-base font-medium">{t("dashboard.budgetUsed")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="h-[220px]">
@@ -464,13 +497,22 @@ export function Dashboard() {
                         <BarChart
                           data={buildBudgetChartData(budgetAlertsList, clientsList)}
                           layout="vertical"
-                          margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                          margin={{ top: 8, right: 12, left: 0, bottom: 8 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                          <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
-                          <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 10 }} />
-                          <Tooltip formatter={(v: number) => [`${v}%`, "Used"]} />
-                          <Bar dataKey="usedPercent" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} />
+                          <defs>
+                            <linearGradient id="budgetBarGradient" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.9} />
+                              <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.9} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
+                          <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                          <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                          <Tooltip
+                            formatter={(value: unknown) => [`${Number(Array.isArray(value) ? value[0] : value)}%`, "Used"]}
+                            contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                          />
+                          <Bar dataKey="usedPercent" fill="url(#budgetBarGradient)" radius={[0, 4, 4, 0]} maxBarSize={28} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -481,19 +523,31 @@ export function Dashboard() {
                 const activity = buildWorkersActivityData(shiftsList, workersList);
                 if (activity.length === 0) return null;
                 return (
-                  <Card>
+                  <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-base">{t("dashboard.completedByWorker")}</CardTitle>
+                      <CardTitle className="text-base font-medium">{t("dashboard.completedByWorker")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[220px]">
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={activity} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                            <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                            <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                            <Tooltip />
-                            <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                          <BarChart
+                            data={activity}
+                            margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
+                          >
+                            <defs>
+                              <linearGradient id="workerBarGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.9} />
+                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" vertical={false} />
+                            <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+                            <Tooltip
+                              formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
+                              contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                            />
+                            <Bar dataKey="count" fill="url(#workerBarGradient)" radius={[4, 4, 0, 0]} maxBarSize={36} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
