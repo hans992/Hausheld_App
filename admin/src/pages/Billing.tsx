@@ -18,7 +18,7 @@ export function Billing() {
     setDownloading(true);
     try {
       await downloadBillingCsv(month);
-      toast.success(`SGB XI CSV downloaded: billing_${month}.csv`);
+      toast.success(`SGB XI CSV downloaded: billing_${month}.csv. Contains data for ${month}.`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Download failed");
     } finally {

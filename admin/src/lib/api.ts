@@ -51,6 +51,7 @@ export interface Shift {
   id: number;
   worker_id: number | null;
   client_id: number;
+  client_name?: string | null;
   start_time: string;
   end_time: string;
   status: string;
@@ -152,6 +153,10 @@ export async function getClientBudgetStatus(clientId: number, month: string): Pr
   return fetchApi<BudgetStatusResponse>(`/clients/${clientId}/budget-status?month=${encodeURIComponent(month)}`);
 }
 
+export async function getBudgetAlerts(month: string): Promise<BudgetStatusResponse[]> {
+  return fetchApi<BudgetStatusResponse[]>(`/clients/budget-alerts?month=${encodeURIComponent(month)}`);
+}
+
 // Suggest substitutes (Admin)
 export interface SubstituteSuggestion {
   worker: Worker;
@@ -196,9 +201,8 @@ export async function getAuditLogs(params?: {
 
 // Billing export (CSV download)
 export async function downloadBillingCsv(month: string): Promise<void> {
-  const token = localStorage.getItem("hausheld_token");
-  const base = import.meta.env.VITE_API_URL ?? "/api";
-  const res = await fetch(`${base}/exports/billing?month=${encodeURIComponent(month)}`, {
+  const token = getAuthToken();
+  const res = await fetch(`${API_BASE}/exports/billing?month=${encodeURIComponent(month)}`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
   if (!res.ok) {
@@ -212,4 +216,9 @@ export async function downloadBillingCsv(month: string): Promise<void> {
   a.download = `billing_${month}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+/** Dev only: run demo seed (requires AUTH_DEV_MODE=true and Admin). */
+export async function runSeedDemo(): Promise<{ ok: boolean; message: string }> {
+  return fetchApi<{ ok: boolean; message: string }>("/dev/seed-demo", { method: "POST" });
 }

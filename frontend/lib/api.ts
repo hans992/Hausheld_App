@@ -58,6 +58,7 @@ export interface Shift {
   id: number;
   worker_id: number | null;
   client_id: number;
+  client_name?: string | null;
   start_time: string;
   end_time: string;
   status: string;

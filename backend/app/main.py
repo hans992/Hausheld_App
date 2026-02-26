@@ -51,6 +51,9 @@ app.include_router(clients_router)
 app.include_router(shifts_router)
 app.include_router(exports_router)
 app.include_router(audit_router)
+if settings.auth_dev_mode:
+    from app.api.dev import router as dev_router
+    app.include_router(dev_router)
 
 
 @app.get("/")

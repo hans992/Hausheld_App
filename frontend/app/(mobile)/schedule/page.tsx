@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { checkIn, getShiftsForToday, type Shift } from "@/lib/api";
 import { getCurrentPosition } from "@/lib/geolocation";
 
@@ -73,9 +74,37 @@ export default function SchedulePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-        <p className="text-muted-foreground">Lade deinen Plan …</p>
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+            <Skeleton className="h-6 w-6 rounded" aria-hidden />
+          </div>
+          <div>
+            <Skeleton className="h-7 w-32" />
+            <Skeleton className="mt-1 h-4 w-40" />
+          </div>
+        </div>
+        <ul className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <li key={i}>
+              <Card className="overflow-hidden">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between gap-2">
+                    <Skeleton className="h-5 w-36" />
+                    <Skeleton className="h-6 w-20 rounded-full" />
+                  </div>
+                  <div className="flex flex-col gap-2 pt-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                </CardContent>
+              </Card>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -122,6 +151,11 @@ export default function SchedulePage() {
               Du hast für heute keine Schichten. Prüfe morgen erneut oder kontaktiere die Verwaltung.
             </CardDescription>
           </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Bei Fragen wende dich an deine Verwaltung oder prüfe den Plan an anderen Tagen.
+            </p>
+          </CardContent>
         </Card>
       ) : (
         <ul className="space-y-4">
@@ -137,7 +171,7 @@ export default function SchedulePage() {
                     <CardHeader className="pb-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <CardTitle className="text-lg">
-                          Client #{shift.client_id}
+                          {shift.client_name ?? `Client #${shift.client_id}`}
                         </CardTitle>
                         <span className="flex items-center gap-1 text-muted-foreground">
                           <span

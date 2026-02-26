@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Loader2, AlertCircle, AlertTriangle, X, ListOrdered } from "lucide-react";
 import { getClients, getClientBudgetStatus, type Client, type BudgetStatusResponse } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 function currentMonth() {
@@ -103,9 +106,44 @@ export function Clients() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-        <span className="text-muted-foreground">Loading clients…</span>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Clients</h1>
+          <p className="text-muted-foreground">
+            Monthly budget and remaining Entlastungsbetrag. Red badge when below 15%. Click a client to see full deduction list.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Monthly budget</TableHead>
+                  <TableHead>Remaining</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[100px]">Details</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-44" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-14" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-12" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-20" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -140,6 +178,7 @@ export function Clients() {
       <Card>
         <CardHeader>
           <CardTitle>All clients (month: {month})</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">Data for month {month}. Budget remaining is as of current calculation.</p>
         </CardHeader>
         <CardContent>
           <Table>
@@ -154,7 +193,24 @@ export function Clients() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clients.map((c) => {
+              {clients.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="p-0">
+                    <EmptyState
+                      icon={<AlertTriangle className="h-6 w-6" />}
+                      title="No clients yet"
+                      description="Clients are added via the backend or demo seed. Run the demo seed to see example data with budget alerts."
+                      action={
+                        <Button variant="secondary" size="sm" asChild>
+                          <Link to="/admin/calendar">Open Calendar</Link>
+                        </Button>
+                      }
+                      className="rounded-none border-0"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+              clients.map((c) => {
                 const status = budgetByClient[c.id];
                 const budgetAlert = status?.budget_alert ?? false;
                 return (
@@ -193,7 +249,8 @@ export function Clients() {
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              })
+              )}
             </TableBody>
           </Table>
         </CardContent>

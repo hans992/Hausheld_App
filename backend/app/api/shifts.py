@@ -28,11 +28,12 @@ class SubstituteSuggestion(BaseModel):
     remaining_capacity_hours: float = Field(..., description="contract_hours - assigned_hours_this_week")
 
 
-def _shift_to_response(s: Shift) -> ShiftResponse:
+def _shift_to_response(s: Shift, client_name: str | None = None) -> ShiftResponse:
     return ShiftResponse(
         id=s.id,
         worker_id=s.worker_id,
         client_id=s.client_id,
+        client_name=client_name,
         start_time=s.start_time,
         end_time=s.end_time,
         status=s.status,
@@ -47,6 +48,12 @@ def _shift_to_response(s: Shift) -> ShiftResponse:
     )
 
 
+async def _get_client_name(db: AsyncSession, client_id: int) -> str | None:
+    r = await db.execute(select(Client.name).where(Client.id == client_id))
+    row = r.one_or_none()
+    return row[0] if row else None
+
+
 @router.get("", response_model=list[ShiftResponse])
 async def list_shifts(
     current_user: CurrentUser,
@@ -56,15 +63,15 @@ async def list_shifts(
     """
     List shifts. Admin: all. Worker: only shifts assigned to them.
     """
-    q = select(Shift)
+    q = select(Shift, Client.name).join(Client, Shift.client_id == Client.id)
     if not include_deleted:
         q = q.where(Shift.deleted_at.is_(None))
     if current_user.role == WorkerRole.WORKER:
         q = q.where(Shift.worker_id == current_user.id)
     q = q.order_by(Shift.start_time.desc())
     result = await db.execute(q)
-    shifts = result.scalars().all()
-    return [_shift_to_response(s) for s in shifts]
+    rows = result.all()
+    return [_shift_to_response(s, client_name=name) for s, name in rows]
 
 
 @router.get("/{shift_id}", response_model=ShiftResponse)
@@ -77,16 +84,17 @@ async def get_shift(
     """
     Get one shift by id. Admin: any. Worker: only if assigned to them; else 403.
     """
-    q = select(Shift).where(Shift.id == shift_id)
+    q = select(Shift, Client.name).join(Client, Shift.client_id == Client.id).where(Shift.id == shift_id)
     if not include_deleted:
         q = q.where(Shift.deleted_at.is_(None))
     result = await db.execute(q)
-    shift = result.scalar_one_or_none()
-    if not shift:
+    row = result.one_or_none()
+    if not row:
         raise HTTPException(status_code=404, detail="Shift not found")
+    shift, client_name = row
     if current_user.role == WorkerRole.WORKER and shift.worker_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden: cannot access another worker's shift")
-    return _shift_to_response(shift)
+    return _shift_to_response(shift, client_name=client_name)
 
 
 @router.get("/{shift_id}/suggest-substitutes", response_model=list[SubstituteSuggestion])
@@ -226,7 +234,8 @@ async def check_in(
     shift.status = ShiftStatus.IN_PROGRESS
     await db.flush()
     await db.refresh(shift)
-    return _shift_to_response(shift)
+    client_name = await _get_client_name(db, shift.client_id)
+    return _shift_to_response(shift, client_name=client_name)
 
 
 @router.patch("/{shift_id}/check-out", response_model=ShiftResponse)
@@ -271,7 +280,8 @@ async def check_out(
     shift.cost = Decimal(str(round(duration_hours * settings.hourly_rate_eur, 2)))
     await db.flush()
     await db.refresh(shift)
-    return _shift_to_response(shift)
+    client_name = await _get_client_name(db, shift.client_id)
+    return _shift_to_response(shift, client_name=client_name)
 
 
 @router.post("", response_model=ShiftResponse, status_code=201)
@@ -292,7 +302,8 @@ async def create_shift(
     db.add(shift)
     await db.flush()
     await db.refresh(shift)
-    return _shift_to_response(shift)
+    client_name = await _get_client_name(db, shift.client_id)
+    return _shift_to_response(shift, client_name=client_name)
 
 
 @router.patch("/{shift_id}", response_model=ShiftResponse)
@@ -323,7 +334,8 @@ async def update_shift(
         setattr(shift, key, value)
     await db.flush()
     await db.refresh(shift)
-    return _shift_to_response(shift)
+    client_name = await _get_client_name(db, shift.client_id)
+    return _shift_to_response(shift, client_name=client_name)
 
 
 @router.delete("/{shift_id}", status_code=204)

@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Loader2, AlertCircle, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { getWorkers, setSickLeave, type Worker } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 function SickLeaveDialog({
@@ -96,9 +99,40 @@ export function Workers() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-        <span className="text-muted-foreground">Loading workers…</span>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Workers</h1>
+          <p className="text-muted-foreground">Manage workers and set sick leave. Use Calendar to find substitutes.</p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>All workers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Available</TableHead>
+                  <TableHead className="w-[140px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-40" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-10" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-24" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -144,7 +178,24 @@ export function Workers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {workers.map((w) => (
+              {workers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="p-0">
+                    <EmptyState
+                      icon={<UserX className="h-6 w-6" />}
+                      title="No workers yet"
+                      description="Workers are added via the backend or demo seed. Use Calendar to assign shifts once you have workers."
+                      action={
+                        <Button variant="secondary" size="sm" asChild>
+                          <Link to="/admin/calendar">Open Calendar</Link>
+                        </Button>
+                      }
+                      className="rounded-none border-0"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                workers.map((w) => (
                 <TableRow key={w.id}>
                   <TableCell className="font-medium">{w.name}</TableCell>
                   <TableCell>{w.email}</TableCell>
@@ -157,7 +208,8 @@ export function Workers() {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+              }
             </TableBody>
           </Table>
         </CardContent>

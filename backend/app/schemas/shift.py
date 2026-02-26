@@ -52,6 +52,7 @@ class CheckOutRequest(BaseModel):
 
 class ShiftResponse(ShiftBase):
     id: int
+    client_name: str | None = None  # For mobile: display name instead of "Client #id"
     check_in_at: datetime | None = None
     check_out_at: datetime | None = None
     signature_storage_key: str | None = None

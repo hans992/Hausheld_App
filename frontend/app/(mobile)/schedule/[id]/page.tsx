@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SignaturePad } from "@/components/signature-pad";
 import {
   getShift,
@@ -85,13 +86,15 @@ export default function ShiftDetailPage() {
     setLoading(true);
     setError(null);
     try {
-      const [shiftData, clientsList] = await Promise.all([
-        getShift(id),
-        getClients(),
-      ]);
+      const shiftData = await getShift(id);
       setShift(shiftData);
-      const c = clientsList.find((x) => x.id === shiftData.client_id) ?? null;
-      setClient(c);
+      try {
+        const clientsList = await getClients();
+        const c = clientsList.find((x) => x.id === shiftData.client_id) ?? null;
+        setClient(c);
+      } catch {
+        setClient(null);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Fehler beim Laden");
     } finally {
@@ -125,9 +128,32 @@ export default function ShiftDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-        <p className="text-muted-foreground">Lade Schicht …</p>
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-lg" />
+          <div className="flex-1">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="mt-1 h-4 w-40" />
+          </div>
+        </div>
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-5 w-40" />
+            <div className="flex flex-col gap-2 pt-2">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-5 w-36" />
+            <div className="space-y-2 pt-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </CardHeader>
+        </Card>
       </div>
     );
   }
@@ -169,7 +195,7 @@ export default function ShiftDetailPage() {
           </Link>
         </Button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold">Schicht #{shift.id}</h1>
+          <h1 className="text-xl font-bold">{shift.client_name ?? `Schicht #${shift.id}`}</h1>
           <p className="text-muted-foreground">{formatDate(shift.start_time)}</p>
         </div>
       </div>
@@ -208,8 +234,21 @@ export default function ShiftDetailPage() {
               Client & Adresse
             </CardTitle>
             <CardDescription className="space-y-1 pt-1">
-              <p className="font-medium text-foreground">{client.name}</p>
+              <p className="font-medium text-foreground">{shift.client_name ?? client.name}</p>
               <p className="text-muted-foreground">{client.address}</p>
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+      {!client && (shift.client_name ?? shift.client_id) && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <MapPin className="h-5 w-5 text-primary" aria-hidden />
+              Client
+            </CardTitle>
+            <CardDescription className="pt-1">
+              <p className="font-medium text-foreground">{shift.client_name ?? `Client #${shift.client_id}`}</p>
             </CardDescription>
           </CardHeader>
         </Card>

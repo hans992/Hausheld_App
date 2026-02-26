@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventClickArg } from "@fullcalendar/core";
+import { Link } from "react-router-dom";
 import { Loader2, AlertCircle, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -15,13 +16,16 @@ import {
 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function shiftToEvent(s: Shift) {
+  const clientLabel = s.client_name ?? `Client ${s.client_id}`;
   return {
     id: String(s.id),
     title: s.worker_id
-      ? `Shift #${s.id} (Client ${s.client_id})`
-      : `Unassigned #${s.id} (Client ${s.client_id})`,
+      ? `Shift #${s.id} (${clientLabel})`
+      : `Unassigned #${s.id} (${clientLabel})`,
     start: s.start_time,
     end: s.end_time,
     extendedProps: { status: s.status, tasks: s.tasks },
@@ -94,9 +98,19 @@ export function Calendar() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-        <span className="text-muted-foreground">Loading calendar…</span>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Calendar</h1>
+          <p className="text-muted-foreground">
+            Click an <strong>Unassigned</strong> shift to see suggested substitutes and assign a worker.
+          </p>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <Skeleton className="h-[400px] w-full rounded-lg" aria-hidden />
+            <p className="mt-3 text-center text-sm text-muted-foreground">Loading calendar…</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -142,6 +156,24 @@ export function Calendar() {
             slotMaxTime="22:00:00"
             eventClick={handleEventClick}
           />
+          {events.length === 0 && (
+            <EmptyState
+              icon={<UserPlus className="h-6 w-6" />}
+              title="No shifts this month"
+              description="Shifts are created via the backend or demo seed. Add workers and clients first, then create shifts to see them here."
+              action={
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <Button variant="secondary" size="sm" asChild>
+                    <Link to="/admin/workers">Workers</Link>
+                  </Button>
+                  <Button variant="secondary" size="sm" asChild>
+                    <Link to="/admin/clients">Clients</Link>
+                  </Button>
+                </div>
+              }
+              className="mt-6"
+            />
+          )}
         </CardContent>
       </Card>
 
