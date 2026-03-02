@@ -54,7 +54,7 @@ export function SignaturePad({
       aria-modal="true"
       aria-labelledby="signature-pad-title"
     >
-      <div className="flex items-center justify-between border-b px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border/60 bg-card px-4 py-3 backdrop-blur-xl">
         <h2 id="signature-pad-title" className="text-lg font-semibold">
           {title}
         </h2>
@@ -73,7 +73,7 @@ export function SignaturePad({
         <p className="text-sm text-muted-foreground">
           Bitte unterschreiben Sie unten zur Bestätigung der erbrachten Leistung.
         </p>
-        <div className="relative flex-1 overflow-hidden rounded-xl border bg-muted/30">
+        <div className="relative flex-1 overflow-hidden rounded-xl border border-border/60 bg-muted/20">
           <SignatureCanvas
             ref={canvasRef}
             canvasProps={{

@@ -4,30 +4,78 @@
 
 @layer base {
   :root {
-    --background: 30 20% 98%;
-    --foreground: 222.2 30% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 30% 12%;
-    --primary: 199 72% 28%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 200 20% 94%;
-    --secondary-foreground: 222.2 30% 12%;
-    --muted: 200 18% 94%;
-    --muted-foreground: 215 16% 48%;
-    --accent: 199 40% 92%;
-    --accent-foreground: 199 72% 28%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214 25% 90%;
-    --input: 214 25% 90%;
-    --ring: 199 72% 28%;
+    color-scheme: dark;
+    --font-sans: "Inter Tight";
+    --font-mono: "Geist Mono";
+    --font-heading: var(--font-mono);
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 96%;
+    --card: 222.2 47.4% 11.2% / 0.60;
+    --card-foreground: 210 40% 96%;
+    --primary: 188 95% 41%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217.2 32.6% 17.5% / 0.80;
+    --muted-foreground: 215 20.2% 70%;
+    --accent: 188 60% 16%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 96%;
+    --border: 217.2 32.6% 17.5% / 0.90;
+    --input: 217.2 32.6% 17.5% / 0.70;
+    --ring: 188 95% 41%;
     --radius-card: 1rem;
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --shadow-soft: 0 0 0 0 rgb(0 0 0 / 0);
+    --brand-gold: 43 96% 56%;
   }
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer base {
+  .light {
+    color-scheme: light;
+    --font-sans: "Inter Tight";
+    --font-mono: "Geist Mono";
+    --font-heading: var(--font-mono);
+    --background: 30 20% 98%;
+    --foreground: 222.2 30% 12%;
+    --card: 0 0% 100% / 0.85;
+    --card-foreground: 222.2 30% 12%;
+    --primary: 188 95% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 20% 94%;
+    --secondary-foreground: 222.2 30% 12%;
+    --muted: 200 18% 94%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 199 40% 92%;
+    --accent-foreground: 188 95% 30%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 25% 90%;
+    --input: 214 25% 90%;
+    --ring: 188 95% 35%;
+    --shadow-soft: 0 0 0 0 rgb(0 0 0 / 0);
+    --brand-gold: 43 96% 50%;
+  }
+}
+
+@layer base {
+  h1, h2, h3, h4 {
+    @apply font-heading tracking-tight;
+  }
+
+  h1 {
+    @apply font-semibold;
+  }
+
+  .lucide {
+    stroke-width: 1.75;
+    vector-effect: non-scaling-stroke;
   }
 }

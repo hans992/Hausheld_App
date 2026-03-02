@@ -16,6 +16,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkIn, getShiftsForToday, type Shift } from "@/lib/api";
 import { getCurrentPosition } from "@/lib/geolocation";
+import { cn } from "@/lib/utils";
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("de-DE", {
@@ -33,6 +34,21 @@ function formatStatus(status: string) {
     Unassigned: "Nicht zugewiesen",
   };
   return map[status] ?? status;
+}
+
+function statusPillClass(status: string) {
+  switch (status) {
+    case "Completed":
+      return "bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/20";
+    case "In_Progress":
+      return "bg-primary/10 text-primary ring-1 ring-primary/25";
+    case "Cancelled":
+      return "bg-destructive/10 text-destructive ring-1 ring-destructive/25";
+    case "Scheduled":
+      return "bg-muted/30 text-muted-foreground ring-1 ring-border/60";
+    default:
+      return "bg-muted/25 text-muted-foreground ring-1 ring-border/50";
+  }
 }
 
 export default function SchedulePage() {
@@ -166,7 +182,7 @@ export default function SchedulePage() {
             )
             .map((shift) => (
               <li key={shift.id}>
-                <Card className="overflow-hidden transition-shadow hover:shadow-md">
+                <Card className="overflow-hidden transition-colors hover:bg-muted/10">
                   <Link href={`/schedule/${shift.id}`} className="block">
                     <CardHeader className="pb-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -175,13 +191,10 @@ export default function SchedulePage() {
                         </CardTitle>
                         <span className="flex items-center gap-1 text-muted-foreground">
                           <span
-                            className={`rounded-full px-3 py-1 text-sm font-medium ${
-                              shift.status === "Completed"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                                : shift.status === "In_Progress"
-                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                                  : "bg-muted text-muted-foreground"
-                            }`}
+                            className={cn(
+                              "rounded-full px-3 py-1 text-sm font-medium",
+                              statusPillClass(shift.status)
+                            )}
                           >
                             {formatStatus(shift.status)}
                           </span>

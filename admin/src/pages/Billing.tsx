@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { downloadBillingCsv } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 function currentMonth() {
   const d = new Date();
@@ -47,12 +48,12 @@ export function Billing() {
               <label htmlFor="billing-month" className="block text-sm font-medium text-muted-foreground mb-1">
                 Month
               </label>
-              <input
+              <Input
                 id="billing-month"
                 type="month"
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
-                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="w-[200px]"
               />
             </div>
             <div className="flex items-end">

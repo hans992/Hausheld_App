@@ -159,7 +159,9 @@ export function Audit() {
                     <TableCell className="font-mono text-sm">{e.id}</TableCell>
                     <TableCell>{e.user_id ?? "—"}</TableCell>
                     <TableCell>
-                      <span className="rounded bg-muted px-2 py-0.5 font-medium">{e.action}</span>
+                      <span className="inline-flex rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 font-mono text-xs tracking-wide">
+                        {e.action}
+                      </span>
                     </TableCell>
                     <TableCell>{e.target_type}</TableCell>
                     <TableCell className="font-mono">{e.target_id}</TableCell>

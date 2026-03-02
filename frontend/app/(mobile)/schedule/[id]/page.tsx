@@ -33,6 +33,7 @@ import {
   type Client,
 } from "@/lib/api";
 import { getCurrentPosition } from "@/lib/geolocation";
+import { cn } from "@/lib/utils";
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("de-DE", {
@@ -58,6 +59,21 @@ function formatStatus(status: string) {
     Unassigned: "Nicht zugewiesen",
   };
   return map[status] ?? status;
+}
+
+function statusPillClass(status: string) {
+  switch (status) {
+    case "Completed":
+      return "bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/20";
+    case "In_Progress":
+      return "bg-primary/10 text-primary ring-1 ring-primary/25";
+    case "Cancelled":
+      return "bg-destructive/10 text-destructive ring-1 ring-destructive/25";
+    case "Scheduled":
+      return "bg-muted/30 text-muted-foreground ring-1 ring-border/60";
+    default:
+      return "bg-muted/25 text-muted-foreground ring-1 ring-border/50";
+  }
 }
 
 /** Parse shift.tasks (e.g. "Cleaning, Cooking" or "Cleaning;Cooking") into list. */
@@ -212,13 +228,10 @@ export default function ShiftDetailPage() {
               {formatTime(shift.start_time)} – {formatTime(shift.end_time)}
             </span>
             <span
-              className={`mt-2 inline-flex w-fit rounded-full px-3 py-1 text-sm font-medium ${
-                shift.status === "Completed"
-                  ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                  : shift.status === "In_Progress"
-                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                    : "bg-muted text-muted-foreground"
-              }`}
+              className={cn(
+                "mt-2 inline-flex w-fit rounded-full px-3 py-1 text-sm font-medium",
+                statusPillClass(shift.status)
+              )}
             >
               {formatStatus(shift.status)}
             </span>

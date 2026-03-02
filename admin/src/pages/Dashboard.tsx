@@ -72,7 +72,12 @@ function buildStatusData(shifts: Shift[]): { name: string; value: number; fill: 
   shifts.forEach((s) => {
     counts[s.status] = (counts[s.status] ?? 0) + 1;
   });
-  const COLORS = ["#64748b", "#4f46e5", "#f43f5e", "#eab308"]; // slate, indigo, rose, amber
+  const COLORS = [
+    "hsl(var(--muted-foreground))",
+    "hsl(var(--primary))",
+    "hsl(var(--destructive))",
+    "hsl(var(--brand-gold))",
+  ];
   return Object.entries(counts).map(([name, value], i) => ({ name, value, fill: COLORS[i % COLORS.length] }));
 }
 
@@ -205,7 +210,7 @@ export function Dashboard() {
           )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link to="/admin/workers">
-            <Card className="transition-colors hover:bg-muted/50">
+            <Card className="transition-colors hover:bg-muted/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.workers")}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -216,7 +221,7 @@ export function Dashboard() {
             </Card>
           </Link>
           <Link to="/admin/clients">
-            <Card className="transition-colors hover:bg-muted/50">
+            <Card className="transition-colors hover:bg-muted/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.clients")}</CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -227,7 +232,7 @@ export function Dashboard() {
             </Card>
           </Link>
           <Link to="/admin/calendar">
-            <Card className="transition-colors hover:bg-muted/50">
+            <Card className="transition-colors hover:bg-muted/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.unassigned")}</CardTitle>
                 <UserX className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -238,7 +243,7 @@ export function Dashboard() {
             </Card>
           </Link>
           <Link to="/admin/clients">
-            <Card className="transition-colors hover:bg-muted/50">
+            <Card className="transition-colors hover:bg-muted/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.budgetAlerts")}</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -254,7 +259,7 @@ export function Dashboard() {
         {summary && (
           <>
             <div className="grid gap-4 sm:grid-cols-3">
-              <Card className="transition-colors hover:bg-muted/30">
+              <Card className="transition-colors hover:bg-muted/15">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Total Active Workers</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -263,7 +268,7 @@ export function Dashboard() {
                   <p className="text-2xl font-bold">{summary.total_active_workers}</p>
                 </CardContent>
               </Card>
-              <Card className="transition-colors hover:bg-muted/30">
+              <Card className="transition-colors hover:bg-muted/15">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Total Clients</CardTitle>
                   <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -272,7 +277,7 @@ export function Dashboard() {
                   <p className="text-2xl font-bold">{summary.total_clients}</p>
                 </CardContent>
               </Card>
-              <Card className="transition-colors hover:bg-muted/30">
+              <Card className="transition-colors hover:bg-muted/15">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Revenue</CardTitle>
                   <Euro className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -283,7 +288,7 @@ export function Dashboard() {
               </Card>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
-              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-medium">Weekly Shift Trends</CardTitle>
                 </CardHeader>
@@ -316,7 +321,7 @@ export function Dashboard() {
                         <Tooltip
                           formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, "Shifts"]}
                           labelFormatter={(_, payload) => payload?.[0]?.payload?.date ?? ""}
-                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                         />
                         <Area
                           type="monotone"
@@ -331,7 +336,7 @@ export function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-medium">City Distribution</CardTitle>
                 </CardHeader>
@@ -353,7 +358,13 @@ export function Dashboard() {
                           {summary.city_distribution.map((_, index) => (
                             <Cell
                               key={`cell-summary-${index}`}
-                              fill={["#64748b", "#4f46e5", "#f43f5e"][index % 3]}
+                              fill={
+                                [
+                                  "hsl(var(--muted-foreground))",
+                                  "hsl(var(--primary))",
+                                  "hsl(var(--brand-gold))",
+                                ][index % 3]
+                              }
                               stroke="hsl(var(--card))"
                               strokeWidth={1.5}
                             />
@@ -361,7 +372,7 @@ export function Dashboard() {
                         </Pie>
                         <Tooltip
                           formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
-                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                         />
                         <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 8 }} />
                       </PieChart>
@@ -369,7 +380,7 @@ export function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Top 5 Workers (Completed Shifts)</CardTitle>
                 </CardHeader>
@@ -390,7 +401,7 @@ export function Dashboard() {
                             </div>
                             <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                               <div
-                                className="h-full rounded-full bg-indigo-500 transition-all duration-500"
+                                className="h-full rounded-full bg-primary transition-all duration-500"
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
@@ -408,7 +419,7 @@ export function Dashboard() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold tracking-tight">{t("dashboard.analytics")}</h2>
             <div className="grid gap-4 lg:grid-cols-2">
-              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</CardTitle>
                 </CardHeader>
@@ -430,7 +441,7 @@ export function Dashboard() {
                         <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
                         <Tooltip
                           formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, t("dashboard.shiftsPerWeek")]}
-                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                         />
                         <Area
                           type="monotone"
@@ -445,7 +456,7 @@ export function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-medium">{t("dashboard.shiftStatus")}</CardTitle>
                 </CardHeader>
@@ -470,7 +481,7 @@ export function Dashboard() {
                         </Pie>
                         <Tooltip
                           formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
-                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                          contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                         />
                         <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 8 }} />
                       </PieChart>
@@ -479,7 +490,7 @@ export function Dashboard() {
                 </CardContent>
               </Card>
               {budgetAlertsList.length > 0 && (
-                <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+                <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-medium">{t("dashboard.budgetUsed")}</CardTitle>
                   </CardHeader>
@@ -493,8 +504,8 @@ export function Dashboard() {
                         >
                           <defs>
                             <linearGradient id="budgetBarGradient" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.9} />
-                              <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.9} />
+                              <stop offset="0%" stopColor="hsl(var(--brand-gold))" stopOpacity={0.85} />
+                              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.9} />
                             </linearGradient>
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
@@ -502,7 +513,7 @@ export function Dashboard() {
                           <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                           <Tooltip
                             formatter={(value: unknown) => [`${Number(Array.isArray(value) ? value[0] : value)}%`, "Used"]}
-                            contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                            contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                           />
                           <Bar dataKey="usedPercent" fill="url(#budgetBarGradient)" radius={[0, 4, 4, 0]} maxBarSize={28} />
                         </BarChart>
@@ -515,7 +526,7 @@ export function Dashboard() {
                 const activity = buildWorkersActivityData(shiftsList, workersList);
                 if (activity.length === 0) return null;
                 return (
-                  <Card className="transition-colors hover:bg-muted/30 overflow-hidden">
+                  <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base font-medium">{t("dashboard.completedByWorker")}</CardTitle>
                     </CardHeader>
@@ -537,7 +548,7 @@ export function Dashboard() {
                             <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
                             <Tooltip
                               formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
-                              contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                              contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                             />
                             <Bar dataKey="count" fill="url(#workerBarGradient)" radius={[4, 4, 0, 0]} maxBarSize={36} />
                           </BarChart>

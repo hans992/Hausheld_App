@@ -26,8 +26,8 @@ function BudgetDetailModal({
 }) {
   const deductions = status?.deductions ?? [];
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" aria-labelledby="budget-detail-title">
-      <div className="w-full max-w-2xl max-h-[80vh] overflow-auto rounded-lg border bg-card p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="budget-detail-title">
+      <div className="w-full max-w-2xl max-h-[80vh] overflow-auto rounded-xl border border-border/60 bg-card p-6">
         <div className="flex items-center justify-between">
           <h2 id="budget-detail-title" className="text-lg font-semibold">
             Budget deductions — {client.name}
@@ -219,7 +219,7 @@ export function Clients() {
                 return (
                   <TableRow
                     key={c.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/25"
                     onClick={() => setDetailClient(c)}
                   >
                     <TableCell className="font-medium">{c.name}</TableCell>

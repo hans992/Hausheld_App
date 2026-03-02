@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 
 function SickLeaveDialog({
   worker,
@@ -39,27 +40,27 @@ function SickLeaveDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true">
-      <div className="w-full max-w-md rounded-lg border bg-card p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="w-full max-w-md rounded-xl border border-border/60 bg-card p-6">
         <h2 className="text-lg font-semibold">Sick Leave: {worker.name}</h2>
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-muted-foreground">Start date</label>
-            <input
+            <Input
               type="date"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="mt-1"
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">End date</label>
-            <input
+            <Input
               type="date"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="mt-1"
               required
             />
           </div>

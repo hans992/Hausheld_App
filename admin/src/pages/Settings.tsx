@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { setStoredLocale } from "@/i18n";
+import { Select } from "@/components/ui/select";
 
 export function Settings() {
   const { t, i18n } = useTranslation();
@@ -26,15 +27,15 @@ export function Settings() {
           <label htmlFor="language-select" className="mb-2 block text-sm font-medium">
             {t("settings.languageLabel")}
           </label>
-          <select
+          <Select
             id="language-select"
             value={i18n.language}
             onChange={handleLanguageChange}
-            className="h-10 w-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="w-[220px]"
           >
             <option value="en">English</option>
             <option value="de">Deutsch</option>
-          </select>
+          </Select>
         </CardContent>
       </Card>
     </div>

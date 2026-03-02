@@ -46,18 +46,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center text-center">
-          <div className="rounded-lg bg-white/95 px-4 py-3 shadow-soft ring-1 ring-black/5">
+          <div className="rounded-xl border border-border/60 bg-card px-4 py-3">
             <img
               src="/logo_hausheld.png"
               alt="Hausheld KI"
               className="h-14 w-auto max-w-[200px] object-contain"
             />
           </div>
-          <h1 className="mt-4 text-2xl font-bold">Hausheld</h1>
-          <p className="text-muted-foreground">Anmelden für Demo</p>
+          <h1 className="mt-5 text-3xl font-semibold font-heading tracking-tight">Hausheld</h1>
+          <p className="mt-1 text-muted-foreground">Anmelden für Demo</p>
         </div>
 
         <Card>

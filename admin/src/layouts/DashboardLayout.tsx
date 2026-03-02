@@ -49,10 +49,10 @@ export function DashboardLayout() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="flex w-64 flex-col border-r border-border/80 bg-card bg-gradient-to-b from-card to-muted/30">
+      <aside className="flex w-64 flex-col border-r border-border/70 bg-card">
         <div className="flex h-16 items-center gap-2 border-b px-4">
-          <Link to="/admin" className="flex items-center gap-2 font-semibold text-primary">
-            <span className="rounded-lg bg-white/95 p-1.5 shadow-soft ring-1 ring-black/5">
+          <Link to="/admin" className="flex items-center gap-2 font-semibold text-foreground">
+            <span className="rounded-xl border border-border/60 bg-card p-1.5">
               <img
                 src="/logo_hausheld.png"
                 alt=""
@@ -60,7 +60,7 @@ export function DashboardLayout() {
                 aria-hidden
               />
             </span>
-            <span>Hausheld Admin</span>
+            <span className="font-heading tracking-tight">Hausheld Admin</span>
           </Link>
         </div>
         <nav className="flex flex-1 flex-col gap-1 p-4">
@@ -71,8 +71,10 @@ export function DashboardLayout() {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted/25 hover:text-foreground"
                 )
               }
             >
@@ -85,14 +87,14 @@ export function DashboardLayout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/25 hover:text-foreground"
           >
             <LogOut className="h-5 w-5 shrink-0" aria-hidden />
             {t("nav.logout")}
           </button>
         </div>
       </aside>
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-8">
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>

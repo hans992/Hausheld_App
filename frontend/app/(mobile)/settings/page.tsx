@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select } from "@/components/ui/select";
 import { setStoredLocale } from "@/lib/i18n";
 
 export default function SettingsPage() {
@@ -29,15 +30,15 @@ export default function SettingsPage() {
           <label htmlFor="language-select" className="mb-2 block text-sm font-medium">
             {t("settings.languageLabel")}
           </label>
-          <select
+          <Select
             id="language-select"
             value={i18n.language}
             onChange={handleLanguageChange}
-            className="h-10 w-full max-w-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="max-w-[220px]"
           >
             <option value="de">Deutsch</option>
             <option value="en">English</option>
-          </select>
+          </Select>
         </CardContent>
       </Card>
       <p className="text-sm text-muted-foreground">

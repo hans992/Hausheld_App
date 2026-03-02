@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { I18nProvider } from "./I18nProvider";
+import "@fontsource/inter-tight/400.css";
+import "@fontsource/inter-tight/500.css";
+import "@fontsource/inter-tight/600.css";
+import "@fontsource/inter-tight/700.css";
+import "@fontsource/geist-mono/400.css";
+import "@fontsource/geist-mono/500.css";
+import "@fontsource/geist-mono/600.css";
+import "@fontsource/geist-mono/700.css";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Hausheld – My Schedule",
@@ -18,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#020617",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -32,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className={`${inter.className} antialiased min-h-screen`}>
+      <body className="min-h-screen">
         <I18nProvider>
           {children}
         </I18nProvider>

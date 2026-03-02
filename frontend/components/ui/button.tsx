@@ -7,15 +7,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-touch min-w-touch px-6 py-4 touch-manipulation active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 min-h-touch min-w-touch px-6 py-4 touch-manipulation active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive",
-        outline: "border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-ring",
-        ghost: "hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
+        outline:
+          "border border-border/70 bg-transparent hover:bg-muted/30 hover:text-foreground focus-visible:ring-ring",
+        secondary:
+          "bg-muted/30 text-foreground hover:bg-muted/45 focus-visible:ring-ring",
+        ghost:
+          "bg-transparent hover:bg-muted/25 hover:text-foreground focus-visible:ring-ring",
         link: "text-primary underline-offset-4 hover:underline focus-visible:ring-ring",
       },
       size: {
