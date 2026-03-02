@@ -1,9 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import type { EventClickArg } from "@fullcalendar/core";
 import { Link } from "react-router-dom";
 import { Loader2, AlertCircle, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
@@ -18,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShiftsCalendar, type CalendarEvent } from "@/components/calendar";
 
-function shiftToEvent(s: Shift) {
+function shiftToCalendarEvent(s: Shift): CalendarEvent {
   const clientLabel = s.client_name ?? `Client ${s.client_id}`;
   return {
     id: String(s.id),
@@ -28,8 +24,8 @@ function shiftToEvent(s: Shift) {
       : `Unassigned #${s.id} (${clientLabel})`,
     start: s.start_time,
     end: s.end_time,
-    extendedProps: { status: s.status, tasks: s.tasks },
-    ...(s.status === "Unassigned" ? { classNames: ["fc-event-unassigned"] } : {}),
+    extendedProps: { status: s.status, tasks: s.tasks, worker_id: s.worker_id, client_id: s.client_id, client_name: s.client_name },
+    isUnassigned: s.status === "Unassigned",
   };
 }
 
@@ -70,10 +66,9 @@ export function Calendar() {
       .finally(() => setSubstitutesLoading(false));
   }, [selectedShiftId]);
 
-  function handleEventClick(info: EventClickArg) {
-    const status = (info.event.extendedProps as { status?: string }).status;
-    if (status !== "Unassigned") return;
-    const id = Number(info.event.id);
+  function handleEventClick(event: CalendarEvent) {
+    if (!event.isUnassigned) return;
+    const id = Number(event.id);
     if (!Number.isInteger(id)) return;
     setSelectedShiftId(id);
   }
@@ -93,7 +88,7 @@ export function Calendar() {
     }
   }
 
-  const events = shifts.map(shiftToEvent);
+  const events = shifts.map(shiftToCalendarEvent);
   const selectedShift = selectedShiftId != null ? shifts.find((s) => s.id === selectedShiftId) : null;
 
   if (loading) {
@@ -145,17 +140,7 @@ export function Calendar() {
       </div>
       <Card>
         <CardContent className="pt-6">
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="timeGridWeek"
-            headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay" }}
-            events={events}
-            editable={false}
-            height="auto"
-            slotMinTime="06:00:00"
-            slotMaxTime="22:00:00"
-            eventClick={handleEventClick}
-          />
+          <ShiftsCalendar events={events} onEventClick={handleEventClick} />
           {events.length === 0 && (
             <EmptyState
               icon={<UserPlus className="h-6 w-6" />}
