@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Calendar, Users, Building2, CreditCard, LayoutDashboard, FileText, Loader2, LogOut, User, Settings, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { clearAuthToken, getAuthToken } from "@/lib/api";
 
 const nav = [
@@ -92,7 +93,9 @@ export function DashboardLayout() {
         </div>
       </aside>
       <main className="flex-1 overflow-auto p-6">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

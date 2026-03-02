@@ -1,4 +1,7 @@
 {
+  "common": {
+    "redirecting": "Redirecting …"
+  },
   "nav": {
     "schedule": "Schedule",
     "clients": "Clients",

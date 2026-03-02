@@ -16,6 +16,7 @@
 - [Quick start](#quick-start)
 - [Demo mode](#demo-mode)
 - [API reference](#api-reference)
+- [Operations runbook](#operations-runbook)
 - [Recent updates](#recent-updates)
 
 ---
@@ -203,6 +204,12 @@ Ensure demo users exist: run `python -m app.utils.seed_demo` in the backend (or 
 | Clients | `GET /clients`, `GET /clients/{id}/budget-status?month=`, `GET /clients/budget-alerts?month=` |
 | Billing | `GET /exports/billing?month=` (SGB XI CSV) |
 | Audit | `GET /audit-logs` (Admin, read-only) |
+
+---
+
+## Operations runbook
+
+For deployment and day-to-day ops: required env vars, health/readiness checks, where to look for logs, how to run the seed, and basic troubleshooting (e.g. map empty → run seed). See **[docs/RUNBOOK.md](docs/RUNBOOK.md)**.
 
 ---
 

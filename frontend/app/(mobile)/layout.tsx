@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Calendar, Users, User, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { getAuthToken } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -20,7 +22,24 @@ export default function MobileLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token && pathname !== "/login") {
+      router.replace("/login");
+    }
+  }, [pathname, router]);
+
+  const token = typeof window !== "undefined" ? getAuthToken() : null;
+  if (!token && pathname !== "/login") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted-foreground">{t("common.redirecting")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col pb-20">

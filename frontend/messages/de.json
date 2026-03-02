@@ -1,4 +1,7 @@
 {
+  "common": {
+    "redirecting": "Weiterleitung …"
+  },
   "nav": {
     "schedule": "Plan",
     "clients": "Klienten",
