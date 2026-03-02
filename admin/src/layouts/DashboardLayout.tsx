@@ -56,7 +56,7 @@ export function DashboardLayout() {
               <img
                 src="/logo_hausheld.png"
                 alt=""
-                className="h-8 w-auto object-contain"
+                className="h-10 w-auto object-contain"
                 aria-hidden
               />
             </span>

@@ -22,7 +22,10 @@ import { Login } from "@/pages/Login";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
 import { MapPage } from "@/pages/Map";
+import { applyTheme, getStoredTheme } from "@/lib/theme";
 import "./index.css";
+
+applyTheme(getStoredTheme());
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -25,6 +25,12 @@
     "description": "App settings.",
     "language": "Language",
     "languageDescription": "Choose the display language.",
-    "languageLabel": "Display language"
+    "languageLabel": "Display language",
+    "theme": "Theme",
+    "themeDescription": "Light or dark appearance.",
+    "themeLabel": "Appearance",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "Use device setting"
   }
 }

@@ -25,6 +25,12 @@
     "description": "App-Einstellungen.",
     "language": "Sprache",
     "languageDescription": "Wähle die Anzeigesprache.",
-    "languageLabel": "Anzeigesprache"
+    "languageLabel": "Anzeigesprache",
+    "theme": "Design",
+    "themeDescription": "Helles oder dunkles Erscheinungsbild.",
+    "themeLabel": "Erscheinungsbild",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "Geräteeinstellung"
   }
 }

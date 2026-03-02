@@ -33,7 +33,7 @@
     "title": "Hausheld Admin",
     "subtitle": "Demo login",
     "cardTitle": "Demo Login",
-    "cardDescription": "Skip manual login. Backend must have AUTH_DEV_MODE=true. Run the seed script so these accounts exist.",
+    "cardDescription": "Choose a role to sign in.",
     "demoAdmin": "Demo: Admin",
     "demoWorker": "Demo: Worker (Essen)",
     "loggedInAdmin": "Logged in as Admin",
@@ -53,7 +53,13 @@
     "description": "App preferences.",
     "language": "Language",
     "languageDescription": "Choose the interface language.",
-    "languageLabel": "Interface language"
+    "languageLabel": "Interface language",
+    "theme": "Theme",
+    "themeDescription": "Light or dark appearance.",
+    "themeLabel": "Appearance",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "Use device setting"
   },
   "common": {
     "open": "Open"

@@ -40,11 +40,11 @@ export function Login() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center text-center">
-          <div className="rounded-xl border border-border/60 bg-card px-4 py-3">
+          <div className="rounded-xl border border-border/60 bg-card px-5 py-4">
             <img
               src="/logo_hausheld.png"
               alt="Hausheld KI"
-              className="h-14 w-auto max-w-[200px] object-contain"
+              className="h-28 w-auto max-w-[400px] object-contain"
             />
           </div>
           <h1 className="mt-5 text-3xl font-semibold font-heading tracking-tight">{t("login.title")}</h1>

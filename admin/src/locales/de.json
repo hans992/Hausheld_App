@@ -33,7 +33,7 @@
     "title": "Hausheld Admin",
     "subtitle": "Demo-Anmeldung",
     "cardTitle": "Demo-Anmeldung",
-    "cardDescription": "Anmeldung überspringen. Backend muss AUTH_DEV_MODE=true haben. Führen Sie das Seed-Skript aus, damit diese Konten existieren.",
+    "cardDescription": "Wähle eine Rolle zum Anmelden.",
     "demoAdmin": "Demo: Admin",
     "demoWorker": "Demo: Mitarbeiter (Essen)",
     "loggedInAdmin": "Als Admin angemeldet",
@@ -53,7 +53,13 @@
     "description": "App-Einstellungen.",
     "language": "Sprache",
     "languageDescription": "Wählen Sie die Anzeigesprache.",
-    "languageLabel": "Anzeigesprache"
+    "languageLabel": "Anzeigesprache",
+    "theme": "Design",
+    "themeDescription": "Helles oder dunkles Erscheinungsbild.",
+    "themeLabel": "Erscheinungsbild",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "Geräteeinstellung"
   },
   "common": {
     "open": "Öffnen"

@@ -49,7 +49,7 @@ export default function MobileLayout({
             <img
               src="/logo_hausheld.png"
               alt="Hausheld KI"
-              className="h-9 w-auto max-w-[160px] object-contain"
+              className="h-12 w-auto max-w-[240px] object-contain"
             />
           </span>
         </Link>

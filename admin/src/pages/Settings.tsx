@@ -1,15 +1,28 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { setStoredLocale } from "@/i18n";
 import { Select } from "@/components/ui/select";
+import { getStoredTheme, setStoredTheme, type Theme } from "@/lib/theme";
 
 export function Settings() {
   const { t, i18n } = useTranslation();
+  const [theme, setTheme] = useState<Theme>("system");
+
+  useEffect(() => {
+    setTheme(getStoredTheme());
+  }, []);
 
   function handleLanguageChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const locale = e.target.value as "en" | "de";
     setStoredLocale(locale);
     i18n.changeLanguage(locale);
+  }
+
+  function handleThemeChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value as Theme;
+    setTheme(value);
+    setStoredTheme(value);
   }
 
   return (
@@ -18,6 +31,27 @@ export function Settings() {
         <h1 className="text-3xl font-bold tracking-tight">{t("settings.title")}</h1>
         <p className="text-muted-foreground">{t("settings.description")}</p>
       </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("settings.theme")}</CardTitle>
+          <CardDescription>{t("settings.themeDescription")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <label htmlFor="theme-select" className="mb-2 block text-sm font-medium">
+            {t("settings.themeLabel")}
+          </label>
+          <Select
+            id="theme-select"
+            value={theme}
+            onChange={handleThemeChange}
+            className="w-[220px]"
+          >
+            <option value="light">{t("settings.themeLight")}</option>
+            <option value="dark">{t("settings.themeDark")}</option>
+            <option value="system">{t("settings.themeSystem")}</option>
+          </Select>
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>{t("settings.language")}</CardTitle>

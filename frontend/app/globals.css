@@ -7,23 +7,23 @@
     color-scheme: dark;
     --font-sans: "Inter Tight";
     --font-mono: "Geist Mono";
-    --font-heading: var(--font-mono);
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 96%;
-    --card: 222.2 47.4% 11.2% / 0.60;
-    --card-foreground: 210 40% 96%;
+    --font-heading: var(--font-sans);
+    --background: 222 47% 9%;
+    --foreground: 213 31% 91%;
+    --card: 222 40% 12% / 0.65;
+    --card-foreground: 213 31% 91%;
     --primary: 188 95% 41%;
     --primary-foreground: 222.2 84% 4.9%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 96%;
-    --muted: 217.2 32.6% 17.5% / 0.80;
-    --muted-foreground: 215 20.2% 70%;
-    --accent: 188 60% 16%;
+    --muted: 217 28% 18% / 0.85;
+    --muted-foreground: 215 18% 65%;
+    --accent: 188 50% 18%;
     --accent-foreground: 210 40% 96%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 96%;
-    --border: 217.2 32.6% 17.5% / 0.90;
-    --input: 217.2 32.6% 17.5% / 0.70;
+    --border: 217 25% 20% / 0.85;
+    --input: 217 28% 18% / 0.75;
     --ring: 188 95% 41%;
     --radius-card: 1rem;
     --shadow-soft: 0 0 0 0 rgb(0 0 0 / 0);
@@ -34,7 +34,7 @@
     color-scheme: light;
     --font-sans: "Inter Tight";
     --font-mono: "Geist Mono";
-    --font-heading: var(--font-mono);
+    --font-heading: var(--font-sans);
     --background: 30 20% 98%;
     --foreground: 222.2 30% 12%;
     --card: 0 0% 100% / 0.85;
@@ -62,7 +62,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased text-base leading-relaxed;
     /* Safe area for mobile notch / home indicator */
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
