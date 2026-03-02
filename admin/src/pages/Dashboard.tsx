@@ -374,7 +374,6 @@ export function Dashboard() {
                           formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
                           contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                         />
-                        <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 8 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
