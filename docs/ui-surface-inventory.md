@@ -31,7 +31,7 @@ This file is the baseline UI surface inventory used to validate the premium visu
   - `admin/src/pages/Workers.tsx` (table, modal with native date inputs)
   - `admin/src/pages/Clients.tsx` (table, modal, status pill)
   - `admin/src/pages/Audit.tsx` (table-heavy, action badge)
-  - `admin/src/pages/Calendar.tsx` (FullCalendar skin + modal)
+  - `admin/src/pages/Calendar.tsx` (custom week/day/month calendar + substitutes modal)
   - `admin/src/pages/Billing.tsx` (native month input)
   - `admin/src/pages/Settings.tsx` (native select)
 

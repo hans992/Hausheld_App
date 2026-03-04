@@ -53,7 +53,7 @@ flowchart LR
 
 - **Backend** (`/backend`) — Single source of truth. FastAPI, SQLAlchemy 2 (async), PostgreSQL + PostGIS, Alembic. Enforces RBAC, encrypts health data, writes to the audit log.
 - **Mobile** (`/frontend`) — Next.js PWA (German UI). Schedule, check-in/out, signature pad, client list for assigned shifts.
-- **Admin** (`/admin`) — Vite + React. Dashboard (KPIs + Recharts analytics), calendar (FullCalendar), workers & sick leave, clients & budget alerts, **Map** (heatmap + worker pins, Mapbox + Deck.gl), billing export, audit log, substitute assignment. Navigation is via sidebar only (no duplicate cards on dashboard).
+- **Admin** (`/admin`) — Vite + React. Dashboard (KPIs + Recharts analytics), calendar (custom week/day/month, Tailwind + shadcn-style), workers & sick leave, clients & budget alerts, **Map** (heatmap + worker pins, Mapbox + Deck.gl), billing export, audit log, substitute assignment. Navigation is via sidebar only (no duplicate cards on dashboard).
 
 Data flow is unidirectional: frontends only call the API; no direct DB access from the client.
 
@@ -65,7 +65,7 @@ Data flow is unidirectional: frontends only call the API; no direct DB access fr
 |------|--------|------|
 | `/backend` | FastAPI, PostgreSQL, PostGIS, SQLAlchemy 2, Alembic, Pydantic | API, auth, geo heatmap, dashboard stats, substitutions, budget, audit, SGB XI export |
 | `/frontend` | Next.js, Tailwind, PWA | Mobile worker app |
-| `/admin` | Vite, React, Tailwind, FullCalendar, Recharts, Mapbox, Deck.gl | Desktop admin; premium analytics and map |
+| `/admin` | Vite, React, Tailwind, custom calendar (week/day/month + time slots), Recharts, Mapbox, Deck.gl | Desktop admin; premium analytics and map |
 
 ---
 

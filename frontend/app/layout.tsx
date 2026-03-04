@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { I18nProvider } from "./I18nProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "@fontsource/inter-tight/400.css";
@@ -58,6 +59,7 @@ export default function RootLayout({
           </I18nProvider>
         </ThemeProvider>
         <Toaster richColors position="top-center" closeButton />
+        <Analytics />
       </body>
     </html>
   );
