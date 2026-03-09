@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
-import { Analytics } from "@vercel/analytics/react";
+import { CookieBanner } from "@/components/CookieBanner";
 import "@fontsource/inter-tight/400.css";
 import "@fontsource/inter-tight/500.css";
 import "@fontsource/inter-tight/600.css";
@@ -48,7 +48,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
       <Toaster richColors position="top-center" closeButton />
-      <Analytics />
+      <CookieBanner />
     </BrowserRouter>
   </StrictMode>
 );

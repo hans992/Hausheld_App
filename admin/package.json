@@ -23,6 +23,7 @@
     "lucide-react": "^0.460.0",
     "mapbox-gl": "^3.6.0",
     "react": "^18.3.1",
+    "react-cookie-consent": "^10.0.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^15.0.0",
     "react-map-gl": "^7.1.7",
