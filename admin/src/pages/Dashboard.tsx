@@ -303,7 +303,6 @@ export function Dashboard() {
                           shortDate: new Date(d.date).toLocaleDateString("de-DE", { weekday: "short", day: "numeric" }),
                         }))}
                         margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
-                        animationDuration={500}
                       >
                         <defs>
                           <linearGradient id="summaryTrendGradient" x1="0" y1="0" x2="0" y2="1">
@@ -432,7 +431,6 @@ export function Dashboard() {
                       <AreaChart
                         data={buildShiftsByWeekData(shiftsList)}
                         margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
-                        animationDuration={500}
                       >
                         <defs>
                           <linearGradient id="analyticsWeekGradient" x1="0" y1="0" x2="0" y2="1">
@@ -506,7 +504,6 @@ export function Dashboard() {
                           data={buildBudgetChartData(budgetAlertsList, clientsList)}
                           layout="vertical"
                           margin={{ top: 8, right: 12, left: 0, bottom: 8 }}
-                          animationDuration={500}
                         >
                           <defs>
                             <linearGradient id="budgetBarGradient" x1="0" y1="0" x2="1" y2="0">
@@ -542,7 +539,6 @@ export function Dashboard() {
                           <BarChart
                             data={activity}
                             margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
-                            animationDuration={500}
                           >
                             <defs>
                               <linearGradient id="workerBarGradient" x1="0" y1="0" x2="0" y2="1">
