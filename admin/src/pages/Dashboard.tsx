@@ -220,40 +220,48 @@ export function Dashboard() {
           )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link to="/admin/workers">
-            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
-              <div className="flex flex-row items-center justify-between pb-2">
-                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.workers")}</span>
+            <GlassCard className="transition-colors hover:bg-muted/20" noEnterAnimation>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.workers")}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </div>
-              <p className="text-2xl font-bold">{stats.workersCount}</p>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{stats.workersCount}</p>
+              </CardContent>
             </GlassCard>
           </Link>
           <Link to="/admin/clients">
-            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
-              <div className="flex flex-row items-center justify-between pb-2">
-                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.clients")}</span>
+            <GlassCard className="transition-colors hover:bg-muted/20" noEnterAnimation>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.clients")}</CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </div>
-              <p className="text-2xl font-bold">{stats.clientsCount}</p>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{stats.clientsCount}</p>
+              </CardContent>
             </GlassCard>
           </Link>
           <Link to="/admin/calendar">
-            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
-              <div className="flex flex-row items-center justify-between pb-2">
-                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.unassigned")}</span>
+            <GlassCard className="transition-colors hover:bg-muted/20" noEnterAnimation>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.unassigned")}</CardTitle>
                 <UserX className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </div>
-              <p className="text-2xl font-bold">{stats.unassignedThisWeek}</p>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{stats.unassignedThisWeek}</p>
+              </CardContent>
             </GlassCard>
           </Link>
           <Link to="/admin/clients">
-            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
-              <div className="flex flex-row items-center justify-between pb-2">
-                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.budgetAlerts")}</span>
+            <GlassCard className="transition-colors hover:bg-muted/20" noEnterAnimation>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.budgetAlerts")}</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </div>
-              <p className="text-2xl font-bold">{stats.budgetAlertsCount}</p>
-              <p className="text-xs text-muted-foreground">{t("dashboard.budgetAlertsHint")}</p>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{stats.budgetAlertsCount}</p>
+                <p className="text-xs text-muted-foreground">{t("dashboard.budgetAlertsHint")}</p>
+              </CardContent>
             </GlassCard>
           </Link>
         </div>
@@ -261,7 +269,7 @@ export function Dashboard() {
         {summary && (
           <>
             <div className="grid gap-4 sm:grid-cols-3">
-              <Card className="transition-colors hover:bg-muted/15">
+              <GlassCard className="transition-colors hover:bg-muted/15" noEnterAnimation>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Total Active Workers</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -269,8 +277,8 @@ export function Dashboard() {
                 <CardContent>
                   <p className="text-2xl font-bold">{summary.total_active_workers}</p>
                 </CardContent>
-              </Card>
-              <Card className="transition-colors hover:bg-muted/15">
+              </GlassCard>
+              <GlassCard className="transition-colors hover:bg-muted/15" noEnterAnimation>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Total Clients</CardTitle>
                   <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -278,8 +286,8 @@ export function Dashboard() {
                 <CardContent>
                   <p className="text-2xl font-bold">{summary.total_clients}</p>
                 </CardContent>
-              </Card>
-              <Card className="transition-colors hover:bg-muted/15">
+              </GlassCard>
+              <GlassCard className="transition-colors hover:bg-muted/15" noEnterAnimation>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Revenue</CardTitle>
                   <Euro className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -287,14 +295,14 @@ export function Dashboard() {
                 <CardContent>
                   <p className="text-2xl font-bold">€{summary.monthly_revenue.toFixed(2)}</p>
                 </CardContent>
-              </Card>
+              </GlassCard>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
-              <GlassCard className="overflow-hidden p-6">
-                <div className="pb-2">
-                  <h3 className="text-base font-medium">Weekly Shift Trends</h3>
-                </div>
-                <div>
+              <GlassCard className="overflow-hidden" noEnterAnimation>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-medium">Weekly Shift Trends</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
@@ -336,13 +344,13 @@ export function Dashboard() {
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
+                </CardContent>
               </GlassCard>
-              <GlassCard className="overflow-hidden p-6">
-                <div className="pb-2">
-                  <h3 className="text-base font-medium">City Distribution</h3>
-                </div>
-                <div>
+              <GlassCard className="overflow-hidden" noEnterAnimation>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-medium">City Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -380,13 +388,13 @@ export function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
+                </CardContent>
               </GlassCard>
-              <GlassCard className="overflow-hidden p-6">
-                <div className="pb-2">
-                  <h3 className="text-base">Top 5 Workers (Completed Shifts)</h3>
-                </div>
-                <div>
+              <GlassCard className="overflow-hidden" noEnterAnimation>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Top 5 Workers (Completed Shifts)</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-3">
                     {(summary.top_workers_completed_shifts ?? []).length === 0 ? (
                       <p className="text-sm text-muted-foreground">No completed shifts this month.</p>
@@ -412,7 +420,7 @@ export function Dashboard() {
                       })
                     )}
                   </div>
-                </div>
+                </CardContent>
               </GlassCard>
             </div>
           </>
@@ -421,11 +429,11 @@ export function Dashboard() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold tracking-tight">{t("dashboard.analytics")}</h2>
             <div className="grid gap-4 lg:grid-cols-2">
-              <GlassCard className="overflow-hidden p-6">
-                <div className="pb-2">
-                  <h3 className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</h3>
-                </div>
-                <div>
+              <GlassCard className="overflow-hidden" noEnterAnimation>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
@@ -456,13 +464,13 @@ export function Dashboard() {
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
+                </CardContent>
               </GlassCard>
-              <GlassCard className="overflow-hidden p-6">
-                <div className="pb-2">
-                  <h3 className="text-base font-medium">{t("dashboard.shiftStatus")}</h3>
-                </div>
-                <div>
+              <GlassCard className="overflow-hidden" noEnterAnimation>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-medium">{t("dashboard.shiftStatus")}</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -490,10 +498,10 @@ export function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
+                </CardContent>
               </GlassCard>
               {budgetAlertsList.length > 0 && (
-                <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
+                <GlassCard className="overflow-hidden" noEnterAnimation>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-medium">{t("dashboard.budgetUsed")}</CardTitle>
                   </CardHeader>
@@ -523,13 +531,13 @@ export function Dashboard() {
                       </ResponsiveContainer>
                     </div>
                   </CardContent>
-                </Card>
+                </GlassCard>
               )}
               {workersList.length > 0 && (() => {
                 const activity = buildWorkersActivityData(shiftsList, workersList);
                 if (activity.length === 0) return null;
                 return (
-                  <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
+                  <GlassCard className="overflow-hidden" noEnterAnimation>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base font-medium">{t("dashboard.completedByWorker")}</CardTitle>
                     </CardHeader>
@@ -558,7 +566,7 @@ export function Dashboard() {
                         </ResponsiveContainer>
                       </div>
                     </CardContent>
-                  </Card>
+                  </GlassCard>
                 );
               })()}
             </div>

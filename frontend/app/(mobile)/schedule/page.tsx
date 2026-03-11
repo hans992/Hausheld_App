@@ -162,14 +162,18 @@ export default function SchedulePage() {
       </div>
 
       {shifts.length === 0 ? (
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold">Keine Einsätze heute</h3>
-          <p className="mt-1 text-muted-foreground">
-            Du hast für heute keine Schichten. Prüfe morgen erneut oder kontaktiere die Verwaltung.
-          </p>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Bei Fragen wende dich an deine Verwaltung oder prüfe den Plan an anderen Tagen.
-          </p>
+        <GlassCard>
+          <CardHeader>
+            <CardTitle>Keine Einsätze heute</CardTitle>
+            <CardDescription>
+              Du hast für heute keine Schichten. Prüfe morgen erneut oder kontaktiere die Verwaltung.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Bei Fragen wende dich an deine Verwaltung oder prüfe den Plan an anderen Tagen.
+            </p>
+          </CardContent>
         </GlassCard>
       ) : (
         <ul className="space-y-4">
@@ -180,13 +184,13 @@ export default function SchedulePage() {
             )
             .map((shift) => (
               <li key={shift.id}>
-                <GlassCard className="overflow-hidden p-0 transition-colors hover:bg-muted/10">
-                  <Link href={`/schedule/${shift.id}`} className="block p-4 pb-0">
-                    <div className="pb-2">
+                <GlassCard className="overflow-hidden transition-colors hover:bg-muted/10" noEnterAnimation>
+                  <Link href={`/schedule/${shift.id}`} className="block">
+                    <CardHeader className="pb-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <h3 className="text-lg font-semibold">
+                        <CardTitle className="text-lg">
                           {shift.client_name ?? `Client #${shift.client_id}`}
-                        </h3>
+                        </CardTitle>
                         <span className="flex items-center gap-1 text-muted-foreground">
                           <span
                             className={cn(
@@ -199,7 +203,7 @@ export default function SchedulePage() {
                           <ChevronRight className="h-4 w-4" aria-hidden />
                         </span>
                       </div>
-                      <div className="flex flex-col gap-1 pt-1 text-muted-foreground">
+                      <CardDescription className="flex flex-col gap-1 pt-1">
                         <span className="flex items-center gap-2">
                           <Clock className="h-4 w-4" aria-hidden />
                           {formatTime(shift.start_time)} – {formatTime(shift.end_time)}
@@ -208,21 +212,23 @@ export default function SchedulePage() {
                           <MapPin className="h-4 w-4" aria-hidden />
                           {shift.tasks}
                         </span>
-                      </div>
-                    </div>
+                      </CardDescription>
+                    </CardHeader>
                   </Link>
-                  <div className="flex gap-3 p-4 pt-3">
+                  <CardContent className="flex gap-3 pt-0">
                     {shift.status === "Scheduled" && (
                       <motion.div
                         className="flex-1"
-                        animate={{
-                          scale: [1, 1.05, 1],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
+                        animate={
+                          checkingInId !== shift.id
+                            ? { scale: [1, 1.05, 1] }
+                            : undefined
+                        }
+                        transition={
+                          checkingInId !== shift.id
+                            ? { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                            : undefined
+                        }
                       >
                         <Button
                           className="w-full"
@@ -251,7 +257,7 @@ export default function SchedulePage() {
                         </Button>
                       </Link>
                     )}
-                  </div>
+                  </CardContent>
                 </GlassCard>
               </li>
             ))}
