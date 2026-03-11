@@ -19,6 +19,7 @@
     "@fontsource/inter-tight": "^5.2.7",
     "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.35.2",
     "i18next": "^24.0.0",
     "lucide-react": "^0.460.0",
     "mapbox-gl": "^3.6.0",

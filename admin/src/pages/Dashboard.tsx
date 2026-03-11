@@ -18,6 +18,7 @@ import {
   Area,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { getShifts, getWorkers, getClients, getBudgetAlerts, getDashboardSummary, runSeedDemo } from "@/lib/api";
 import type { Shift } from "@/lib/api";
@@ -171,7 +172,16 @@ export function Dashboard() {
   const isEmpty = stats && stats.workersCount === 0 && stats.clientsCount === 0;
 
   return (
-    <div className="space-y-8">
+    <>
+      {/* Animated background — fixed, behind content */}
+      <div
+        className="fixed inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"
+        aria-hidden
+      >
+        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-brand/50 blur-2xl" />
+      </div>
+
+      <div className="relative z-10 space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t("dashboard.title")}</h1>
         <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
@@ -210,49 +220,41 @@ export function Dashboard() {
           )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link to="/admin/workers">
-            <Card className="transition-colors hover:bg-muted/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.workers")}</CardTitle>
+            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
+              <div className="flex flex-row items-center justify-between pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.workers")}</span>
                 <Users className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{stats.workersCount}</p>
-              </CardContent>
-            </Card>
+              </div>
+              <p className="text-2xl font-bold">{stats.workersCount}</p>
+            </GlassCard>
           </Link>
           <Link to="/admin/clients">
-            <Card className="transition-colors hover:bg-muted/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.clients")}</CardTitle>
+            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
+              <div className="flex flex-row items-center justify-between pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.clients")}</span>
                 <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{stats.clientsCount}</p>
-              </CardContent>
-            </Card>
+              </div>
+              <p className="text-2xl font-bold">{stats.clientsCount}</p>
+            </GlassCard>
           </Link>
           <Link to="/admin/calendar">
-            <Card className="transition-colors hover:bg-muted/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.unassigned")}</CardTitle>
+            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
+              <div className="flex flex-row items-center justify-between pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.unassigned")}</span>
                 <UserX className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{stats.unassignedThisWeek}</p>
-              </CardContent>
-            </Card>
+              </div>
+              <p className="text-2xl font-bold">{stats.unassignedThisWeek}</p>
+            </GlassCard>
           </Link>
           <Link to="/admin/clients">
-            <Card className="transition-colors hover:bg-muted/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.budgetAlerts")}</CardTitle>
+            <GlassCard className="p-4 transition-colors hover:bg-muted/20">
+              <div className="flex flex-row items-center justify-between pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t("dashboard.budgetAlerts")}</span>
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" aria-hidden />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{stats.budgetAlertsCount}</p>
-                <p className="text-xs text-muted-foreground">{t("dashboard.budgetAlertsHint")}</p>
-              </CardContent>
-            </Card>
+              </div>
+              <p className="text-2xl font-bold">{stats.budgetAlertsCount}</p>
+              <p className="text-xs text-muted-foreground">{t("dashboard.budgetAlertsHint")}</p>
+            </GlassCard>
           </Link>
         </div>
         {/* Stats from dashboard-summary API: KPIs + charts */}
@@ -288,11 +290,11 @@ export function Dashboard() {
               </Card>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
-              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-medium">Weekly Shift Trends</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <GlassCard className="overflow-hidden p-6">
+                <div className="pb-2">
+                  <h3 className="text-base font-medium">Weekly Shift Trends</h3>
+                </div>
+                <div>
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
@@ -301,6 +303,7 @@ export function Dashboard() {
                           shortDate: new Date(d.date).toLocaleDateString("de-DE", { weekday: "short", day: "numeric" }),
                         }))}
                         margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
+                        animationDuration={500}
                       >
                         <defs>
                           <linearGradient id="summaryTrendGradient" x1="0" y1="0" x2="0" y2="1">
@@ -329,18 +332,18 @@ export function Dashboard() {
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
                           fill="url(#summaryTrendGradient)"
-                          isAnimationActive
+                          isAnimationActive={true}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                </CardContent>
-              </Card>
-              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-medium">City Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
+                </div>
+              </GlassCard>
+              <GlassCard className="overflow-hidden p-6">
+                <div className="pb-2">
+                  <h3 className="text-base font-medium">City Distribution</h3>
+                </div>
+                <div>
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -354,6 +357,7 @@ export function Dashboard() {
                           outerRadius={70}
                           paddingAngle={2}
                           label={({ name, value }) => (value > 0 ? `${name}: ${value}` : null)}
+                          isAnimationActive={true}
                         >
                           {summary.city_distribution.map((_, index) => (
                             <Cell
@@ -377,13 +381,13 @@ export function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                </CardContent>
-              </Card>
-              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Top 5 Workers (Completed Shifts)</CardTitle>
-                </CardHeader>
-                <CardContent>
+                </div>
+              </GlassCard>
+              <GlassCard className="overflow-hidden p-6">
+                <div className="pb-2">
+                  <h3 className="text-base">Top 5 Workers (Completed Shifts)</h3>
+                </div>
+                <div>
                   <div className="space-y-3">
                     {(summary.top_workers_completed_shifts ?? []).length === 0 ? (
                       <p className="text-sm text-muted-foreground">No completed shifts this month.</p>
@@ -409,8 +413,8 @@ export function Dashboard() {
                       })
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </GlassCard>
             </div>
           </>
         )}
@@ -418,16 +422,17 @@ export function Dashboard() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold tracking-tight">{t("dashboard.analytics")}</h2>
             <div className="grid gap-4 lg:grid-cols-2">
-              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <GlassCard className="overflow-hidden p-6">
+                <div className="pb-2">
+                  <h3 className="text-base font-medium">{t("dashboard.shiftsPerWeek")}</h3>
+                </div>
+                <div>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={buildShiftsByWeekData(shiftsList)}
                         margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
+                        animationDuration={500}
                       >
                         <defs>
                           <linearGradient id="analyticsWeekGradient" x1="0" y1="0" x2="0" y2="1">
@@ -448,18 +453,18 @@ export function Dashboard() {
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
                           fill="url(#analyticsWeekGradient)"
-                          isAnimationActive
+                          isAnimationActive={true}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                </CardContent>
-              </Card>
-              <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-medium">{t("dashboard.shiftStatus")}</CardTitle>
-                </CardHeader>
-                <CardContent>
+                </div>
+              </GlassCard>
+              <GlassCard className="overflow-hidden p-6">
+                <div className="pb-2">
+                  <h3 className="text-base font-medium">{t("dashboard.shiftStatus")}</h3>
+                </div>
+                <div>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -473,6 +478,7 @@ export function Dashboard() {
                           outerRadius={72}
                           paddingAngle={3}
                           label={false}
+                          isAnimationActive={true}
                         >
                           {buildStatusData(shiftsList).map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.fill} stroke="hsl(var(--card))" strokeWidth={1.5} />
@@ -486,8 +492,8 @@ export function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </GlassCard>
               {budgetAlertsList.length > 0 && (
                 <Card className="transition-colors hover:bg-muted/15 overflow-hidden">
                   <CardHeader className="pb-2">
@@ -500,6 +506,7 @@ export function Dashboard() {
                           data={buildBudgetChartData(budgetAlertsList, clientsList)}
                           layout="vertical"
                           margin={{ top: 8, right: 12, left: 0, bottom: 8 }}
+                          animationDuration={500}
                         >
                           <defs>
                             <linearGradient id="budgetBarGradient" x1="0" y1="0" x2="1" y2="0">
@@ -514,7 +521,7 @@ export function Dashboard() {
                             formatter={(value: unknown) => [`${Number(Array.isArray(value) ? value[0] : value)}%`, "Used"]}
                             contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                           />
-                          <Bar dataKey="usedPercent" fill="url(#budgetBarGradient)" radius={[0, 4, 4, 0]} maxBarSize={28} />
+                          <Bar dataKey="usedPercent" fill="url(#budgetBarGradient)" radius={[0, 4, 4, 0]} maxBarSize={28} isAnimationActive={true} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -535,6 +542,7 @@ export function Dashboard() {
                           <BarChart
                             data={activity}
                             margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
+                            animationDuration={500}
                           >
                             <defs>
                               <linearGradient id="workerBarGradient" x1="0" y1="0" x2="0" y2="1">
@@ -549,7 +557,7 @@ export function Dashboard() {
                               formatter={(value: unknown) => [Array.isArray(value) ? value[0] : value, ""]}
                               contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", boxShadow: "none" }}
                             />
-                            <Bar dataKey="count" fill="url(#workerBarGradient)" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                            <Bar dataKey="count" fill="url(#workerBarGradient)" radius={[4, 4, 0, 0]} maxBarSize={36} isAnimationActive={true} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -563,5 +571,6 @@ export function Dashboard() {
         </>
       ) : null}
     </div>
+    </>
   );
 }

@@ -42,7 +42,7 @@ export default function MobileLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col pb-20">
+    <div className="relative z-10 flex min-h-screen flex-col bg-transparent pb-20">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-card px-4 py-3 backdrop-blur-xl">
         <Link href="/schedule" className="flex items-center justify-center">
           <span className="rounded-xl border border-border/60 bg-card px-3 py-2">
@@ -54,11 +54,11 @@ export default function MobileLayout({
           </span>
         </Link>
       </header>
-      <main className="flex-1 p-5">{children}</main>
+      <main className="flex-1 bg-transparent p-5">{children}</main>
 
-      {/* Bottom navigation – large touch targets */}
+      {/* Bottom navigation – glassmorphism */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-card backdrop-blur-xl"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-glass-border bg-glass backdrop-blur-lg"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
       >
         <div className="flex h-16 min-h-touch items-center justify-around">

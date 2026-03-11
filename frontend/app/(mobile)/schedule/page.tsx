@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { CalendarDays, Clock, MapPin, Loader2, AlertCircle, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkIn, getShiftsForToday, type Shift } from "@/lib/api";
 import { getCurrentPosition } from "@/lib/geolocation";
@@ -160,19 +162,15 @@ export default function SchedulePage() {
       </div>
 
       {shifts.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Keine Einsätze heute</CardTitle>
-            <CardDescription>
-              Du hast für heute keine Schichten. Prüfe morgen erneut oder kontaktiere die Verwaltung.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Bei Fragen wende dich an deine Verwaltung oder prüfe den Plan an anderen Tagen.
-            </p>
-          </CardContent>
-        </Card>
+        <GlassCard className="p-6">
+          <h3 className="text-lg font-semibold">Keine Einsätze heute</h3>
+          <p className="mt-1 text-muted-foreground">
+            Du hast für heute keine Schichten. Prüfe morgen erneut oder kontaktiere die Verwaltung.
+          </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Bei Fragen wende dich an deine Verwaltung oder prüfe den Plan an anderen Tagen.
+          </p>
+        </GlassCard>
       ) : (
         <ul className="space-y-4">
           {shifts
@@ -182,13 +180,13 @@ export default function SchedulePage() {
             )
             .map((shift) => (
               <li key={shift.id}>
-                <Card className="overflow-hidden transition-colors hover:bg-muted/10">
-                  <Link href={`/schedule/${shift.id}`} className="block">
-                    <CardHeader className="pb-2">
+                <GlassCard className="overflow-hidden p-0 transition-colors hover:bg-muted/10">
+                  <Link href={`/schedule/${shift.id}`} className="block p-4 pb-0">
+                    <div className="pb-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <CardTitle className="text-lg">
+                        <h3 className="text-lg font-semibold">
                           {shift.client_name ?? `Client #${shift.client_id}`}
-                        </CardTitle>
+                        </h3>
                         <span className="flex items-center gap-1 text-muted-foreground">
                           <span
                             className={cn(
@@ -201,7 +199,7 @@ export default function SchedulePage() {
                           <ChevronRight className="h-4 w-4" aria-hidden />
                         </span>
                       </div>
-                      <CardDescription className="flex flex-col gap-1 pt-1">
+                      <div className="flex flex-col gap-1 pt-1 text-muted-foreground">
                         <span className="flex items-center gap-2">
                           <Clock className="h-4 w-4" aria-hidden />
                           {formatTime(shift.start_time)} – {formatTime(shift.end_time)}
@@ -210,29 +208,41 @@ export default function SchedulePage() {
                           <MapPin className="h-4 w-4" aria-hidden />
                           {shift.tasks}
                         </span>
-                      </CardDescription>
-                    </CardHeader>
+                      </div>
+                    </div>
                   </Link>
-                  <CardContent className="flex gap-3 pt-0">
+                  <div className="flex gap-3 p-4 pt-3">
                     {shift.status === "Scheduled" && (
-                      <Button
+                      <motion.div
                         className="flex-1"
-                        size="lg"
-                        disabled={checkingInId === shift.id}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleCheckIn(shift.id);
+                        animate={{
+                          scale: [1, 1.05, 1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
                         }}
                       >
-                        {checkingInId === shift.id ? (
-                          <>
-                            <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-                            Standort …
-                          </>
-                        ) : (
-                          "Check-in"
-                        )}
-                      </Button>
+                        <Button
+                          className="w-full"
+                          size="lg"
+                          disabled={checkingInId === shift.id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleCheckIn(shift.id);
+                          }}
+                        >
+                          {checkingInId === shift.id ? (
+                            <>
+                              <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+                              Standort …
+                            </>
+                          ) : (
+                            "Check-in"
+                          )}
+                        </Button>
+                      </motion.div>
                     )}
                     {shift.status === "In_Progress" && (
                       <Link href={`/schedule/${shift.id}`} className="flex-1">
@@ -241,8 +251,8 @@ export default function SchedulePage() {
                         </Button>
                       </Link>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </GlassCard>
               </li>
             ))}
         </ul>
